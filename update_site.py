@@ -537,7 +537,7 @@ def main():
             "room-07": {"path": "Room wise layout/Dining.png", "title": "Dining Layout"},
             "room-08": {"path": "Room wise layout/Bedroom 2.png", "title": "Bedroom 02 Layout"},
             "room-09": {"path": "Room wise layout/Bedroom 3.png", "title": "Bedroom 03 Layout"},
-            "room-10": {"path": "Room wise layout/Lounge + Bar.png", "title": "Bar & Lounge Layout"},
+            "room-10": {"path": "Room wise layout/Bar & Lounge.png", "title": "Bar & Lounge Layout"},
             "room-11": {"path": "Room wise layout/Balcony.png", "title": "Outdoor Layout"}
         }
         layout_info = layout_images.get(rid, {"path": "", "title": ""})
