@@ -700,6 +700,11 @@ body {
   .room-section {
     grid-template-columns: 1fr;
     gap: 40px;
+    padding: 80px 0;
+  }
+  
+  .room-section:not(#thank-you) {
+    border-bottom: var(--border-width) solid var(--line);
   }
   
   .room-meta-header {
