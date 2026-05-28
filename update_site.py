@@ -168,7 +168,7 @@ def main():
     # 7. Generate Index Page HTML (Using the Image on the left side)
     def generate_index_page():
         list_rows = ""
-        num = 0
+        num = 1
         for r_conf in rooms_config:
             rid = r_conf["id"]
             if rid == "room-materials":
@@ -188,14 +188,14 @@ def main():
           </div>\n"""
           
         return f"""    <!-- ==========================================================================
-         ROOM 00: INDEX PAGE (PLAN KEY)
+         ROOM 01: INDEX PAGE (PLAN KEY)
          ========================================================================== -->
     <main class="room-section index-section" id="room-00" data-room-title="Plan Key">
       
       <!-- Left Column: Title + Blueprint Image -->
       <section class="left-column">
         <div class="space-title-container">
-          <span class="space-number">00</span>
+          <span class="space-number">01</span>
           <h1 class="space-title">Plan Key</h1>
         </div>
         <div class="blueprint-large-container" style="padding: 0; overflow: hidden; background: none; border: none; box-shadow: none;">
@@ -234,7 +234,7 @@ def main():
       <!-- Right Column: List Key Table -->
       <section class="right-column index-right-column" style="overflow-y: hidden;">
         <div class="index-meta-header">
-          <span class="index-label">06 · PLAN KEY</span>
+          <span class="index-label">01 · PLAN KEY</span>
           <h2 class="index-heading">Eleven rooms,<br>one walkthrough.</h2>
         </div>
         
@@ -280,8 +280,11 @@ def main():
         folder = r_conf["folder"]
         title = r_conf["title"]
         quote = r_conf["quote"]
-        r_idx_num = r_idx + 1
-        idx_str = f"{r_idx_num:02d}"
+        if rid == "room-materials":
+            idx_str = "00"
+        else:
+            r_idx_num = r_idx + 1
+            idx_str = f"{r_idx_num:02d}"
         active_indices[rid] = 0
         
         if rid == "room-materials":
@@ -760,7 +763,7 @@ def main():
             <img src="Noku mark.png" alt="N" class="custom-brand-logo">
             <div class="custom-brand-text">
               <span class="custom-brand-title">CUSTOMISATION</span>
-              <span class="custom-brand-sub">12 &nbsp;·&nbsp; MADE FOR YOU</span>
+              <span class="custom-brand-sub">13 &nbsp;·&nbsp; MADE FOR YOU</span>
             </div>
           </div>
           <h1 class="custom-hero-heading">Every piece, tailored<br>to the residence.</h1>
@@ -1006,7 +1009,7 @@ def main():
               if (idxEl && titleEl) {{
                 badge.innerText = `${{idxEl.innerText}} ${{titleEl.innerText}}`;
               }} else if (roomSection.id === 'room-custom') {{
-                badge.innerText = `12 Customisation`;
+                badge.innerText = `13 Customisation`;
               }}
             }}
           }}
