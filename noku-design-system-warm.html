@@ -1,0 +1,2678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Noku Studio — Design System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,200;0,300;0,400;0,600;0,700;1,400;1,600&family=Quattrocento:wght@400;700&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ════════════════════════════════════════════════════════════════
+       NOKU STUDIO — UNIFIED DESIGN SYSTEM  v3
+       Sources: nokustudio.in (live brand) + style.css (local production)
+       ════════════════════════════════════════════════════════════════
+
+       DECISION LOG
+       ─────────────────────────────────────────────────────────────
+       [D1] CSS variable names follow style.css (--chamoisee, --gunmetal,
+            --font-display etc.). The live site uses Smootify slugs
+            (--swatch--brand, --font--primary-family) — those are mapped
+            here to style.css names which are the local build target.
+
+       [D2] LIGHT-FIRST base, dark as special mode.
+            nokustudio.in (the live brand authority) runs on a warm
+            off-white (#f4f5f1). Dark sections exist as cinematic moments
+            (hero, narrative panels, ticker) — never the default surface.
+            --light (#f4f5f1) is the primary surface, matching the live
+            brand. --cream (#EDE6DA) is the warm alt-section bg.
+            --paper consolidated into --light (ΔL < 1% — negligible).
+
+       [D3] --chamoisee is PRIMARY TEXT COLOR on light, not just accent.
+            On nokustudio.in every nav link, heading, footer link, and CTA
+            is rendered in #a27b5c. On dark sections it flips to accent /
+            highlight. Single color — dual role depending on background.
+
+       [D4] Josefin Sans weight system has three registers:
+            200 — giant dark-section display numbers / hero backdrop (local)
+            400 — section headings on light backgrounds (live site standard)
+            600 — nav links, labels, product names, CTAs
+            700 — high-emphasis callouts
+            The 200 register is local-index-specific. Everything on the
+            live brand page uses 400–600.
+
+       [D5] Josefin Sans for ALL headings AND nav labels.
+            Quattrocento for body paragraphs and captions only.
+            (Live site confirmed: nav_link, nav_menu_link = Josefin Sans.)
+
+       [D6] Section sequence for brand/marketing pages:
+            light (#f4f5f1) → light-secondary (#fafaf8) → light → dark →
+            light. For product/narrative flow (local index.html):
+            dark-bg → light → cream → dark-bg. Both share the same token
+            pool — only the default body context differs.
+
+       [D7] Palette splits: Primary 4 (gunmetal/chamoisee/outerspace/bone)
+            + Secondary 8 (surface, text, border — consolidated from 12
+            by removing --paper/--deep-muted/--light-muted/--border-soft).
+
+       [D8] Grain overlay (3.5% opacity) applied ONLY on dark sections.
+            The live site has no grain — its light surfaces are clean.
+            Grain stays for dark narrative/hero moments where it adds
+            analog texture without affecting the brand's clean light pages.
+
+       [D9] Border radius:
+            100vw — pill tags, pill CTAs
+            1rem  — cards (live site --radius--main)
+            0.5rem— small UI (quantity btns, chips)
+            0     — spec rows, dividers
+            This collapses our previous 5-step scale to a simpler 3-step
+            matching the live site tokens exactly.
+
+       [D10] Border width: 1px standard. Live site spec is 1.5px main /
+             0.8px on buttons. We use 1px as a clean midpoint — precise
+             enough for Josefin Sans letterforms, slightly sturdier than
+             the 0.8px button hairlines that can disappear on low-DPI.
+    */
+
+    /* ─── Tokens ─────────────────────────────────────────────── */
+    :root {
+      /* [D7] Primary Brand Palette — 4 colors */
+      --gunmetal:   #2A231E;   /* Dark teal-grey. Nav bg, dark surfaces    */
+      --chamoisee:  #a27b5c;   /* Warm tan. Primary text on light [D3]     */
+      --outerspace: #392F28;   /* Mid teal. Alternative dark surface       */
+      --bone:       #dcd7c9;   /* Warm off-white. Text on dark bg          */
+
+      /* [D7] Secondary Surface + Text System — 8 tokens */
+      --light:           #f4f5f1; /* Primary surface. Live brand bg        */
+      --light-secondary: #fafaf8; /* Card / panel bg                       */
+      --cream:           #EDE6DA; /* Warm alt sections — materials, config */
+      --ink:             #2C2622; /* Primary text on light                 */
+      --muted:           #6B6258; /* Secondary text + quiet labels         */
+      --line:            #D8D2C8; /* All dividers and soft borders         */
+      --dark-bg:         #1E1915; /* Dark bg — hero, narrative, ticker     */
+      --dark-border:     #4F4339; /* Dividers on dark sections             */
+
+      /* [D1] Typography */
+      --font-display: 'Josefin Sans', sans-serif; /* [D4][D5] Headings+nav */
+      --font-body:    'Quattrocento', serif;       /* [D5] Body paragraphs  */
+
+      /* [D9] Radius */
+      --radius-sm:   0.5rem; /* 8px  — small UI, chips  */
+      --radius-md:   1rem;   /* 16px — cards, nav       */
+      --radius-pill: 100vw;  /* pill buttons, tags      */
+
+      /* [D10] Borders */
+      --border-width: 1px;
+
+      /* Spacing (Smootify Base collection + local additions) */
+      --space-xs:  0.5rem;   /*  8px */
+      --space-sm:  1.5rem;   /* 24px */
+      --space-md:  3rem;     /* 48px */
+      --space-lg:  7rem;     /* 112px */
+      --space-xl:  10rem;    /* 160px */
+
+      /* Layout */
+      --max-width: 90rem;  /* matches live --max-width--main */
+    }
+
+    /* ─── Reset ─────────────────────────────────────────────── */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html {
+      font-size: 16px;
+      scroll-behavior: smooth;
+      background-color: var(--light);
+      scrollbar-width: thin;
+      scrollbar-color: var(--chamoisee) var(--light);
+    }
+
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--light); }
+    ::-webkit-scrollbar-thumb { background: var(--chamoisee); border-radius: 3px; }
+
+    body {
+      font-family: var(--font-body);
+      background-color: var(--light);
+      color: var(--ink);
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    img { display: block; max-width: 100%; }
+    button { font-family: inherit; cursor: pointer; }
+
+    /* ─── [D8] Grain — dark sections only ───────────────────── */
+    .grain-overlay {
+      position: absolute; inset: 0; z-index: 1; pointer-events: none;
+      opacity: 0.035;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+
+    /* ─── Layout ─────────────────────────────────────────────── */
+    .container {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 0 3rem;
+      width: 100%;
+    }
+
+    .section-pad { padding: clamp(80px, 10vw, 140px) 0; }
+
+    /* ─── [D6] Section backgrounds ───────────────────────────── */
+    .bg-light  { background-color: var(--light);           color: var(--ink); }
+    .bg-light2 { background-color: var(--light-secondary); color: var(--ink); }
+    .bg-cream  { background-color: var(--cream);           color: var(--ink); }
+    .bg-dark   { background-color: var(--dark-bg);         color: var(--bone); position: relative; overflow: hidden; }
+
+    .sep-dark  { border-top: var(--border-width) solid var(--dark-border); }
+    .sep-light { border-top: var(--border-width) solid var(--line); }
+
+    /* ─── Animations ─────────────────────────────────────────── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes tickerLoop {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+
+    .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.7s ease, transform 0.7s ease; }
+    .reveal.is-visible { opacity: 1; transform: translateY(0); }
+
+    /* ────────────────────────────────────────────────────────────
+       FLOATING NAV — glass bar, matches production index.html [D2]
+    ──────────────────────────────────────────────────────────── */
+    .ds-nav {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: calc(100% - 40px);
+      max-width: 1200px;
+      height: 70px;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 40px;
+      background-color: rgba(36, 32, 29, 0.45);
+      -webkit-backdrop-filter: blur(20px);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.15), 0 1px 3px rgba(0,0,0,0.05);
+      transition: background-color 0.6s cubic-bezier(0.16,1,0.3,1),
+                  border-color 0.6s cubic-bezier(0.16,1,0.3,1),
+                  box-shadow 0.6s cubic-bezier(0.16,1,0.3,1),
+                  top 0.6s ease, height 0.6s ease;
+    }
+
+    .ds-nav.scrolled {
+      top: 12px;
+      height: 60px;
+      background-color: rgba(36, 32, 29, 0.7);
+      border-color: rgba(255,255,255,0.12);
+      box-shadow: 0 15px 35px rgba(0,0,0,0.25);
+    }
+
+    /* Light adaptation while floating over light sections */
+    .ds-nav.light-nav {
+      background-color: rgba(244, 245, 241, 0.85);
+      border-color: rgba(44, 38, 34, 0.1);
+      box-shadow: 0 4px 20px rgba(44,38,34,0.08);
+    }
+    .ds-nav.light-nav.scrolled {
+      background-color: rgba(244, 245, 241, 0.95);
+      border-color: rgba(44, 38, 34, 0.15);
+      box-shadow: 0 8px 30px rgba(44,38,34,0.12);
+    }
+
+    .ds-nav__logo { display: flex; align-items: center; }
+    .ds-nav__logo .logo-svg {
+      fill: var(--bone);
+      display: block;
+      transition: fill 0.6s cubic-bezier(0.16,1,0.3,1);
+    }
+    .ds-nav.light-nav .ds-nav__logo .logo-svg { fill: var(--chamoisee); }
+
+    .ds-nav__links {
+      display: flex;
+      gap: 48px;
+      list-style: none;
+    }
+
+    .ds-nav__links a {
+      font-family: var(--font-body);
+      font-size: 11px;
+      font-weight: 300;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--bone);
+      transition: color 0.4s ease;
+      position: relative;
+      padding: 6px 0;
+    }
+    .ds-nav__links a::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0;
+      width: 0; height: 1px;
+      background-color: var(--chamoisee);
+      transition: width 0.4s cubic-bezier(0.16,1,0.3,1);
+    }
+    .ds-nav__links a:hover { color: var(--chamoisee); }
+    .ds-nav__links a:hover::after { width: 100%; }
+    .ds-nav.light-nav .ds-nav__links a { color: var(--ink); }
+    .ds-nav.light-nav .ds-nav__links a:hover { color: var(--chamoisee); }
+
+    .ds-nav__cart {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 6px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-left: 20px;
+      color: var(--bone);
+      transition: color 0.4s cubic-bezier(0.16,1,0.3,1), transform 0.4s cubic-bezier(0.16,1,0.3,1);
+    }
+    .ds-nav__cart:hover { color: var(--chamoisee); transform: scale(1.05); }
+    .ds-nav__cart .cart-icon { stroke: currentColor; }
+    .ds-nav.light-nav .ds-nav__cart { color: var(--ink); }
+    .ds-nav.light-nav .ds-nav__cart:hover { color: var(--chamoisee); }
+
+    .ds-nav__cart-count {
+      position: absolute;
+      top: -4px; right: -4px;
+      background-color: var(--chamoisee);
+      color: var(--light);
+      font-family: var(--font-display);
+      font-size: 9px;
+      font-weight: 700;
+      width: 16px; height: 16px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+
+    .ds-nav__burger { display: none; background: none; border: none; cursor: pointer; color: var(--bone); }
+    .ds-nav.light-nav .ds-nav__burger { color: var(--ink); }
+    .ds-nav__burger svg { stroke: currentColor; display: block; }
+
+    @media (max-width: 860px) {
+      .ds-nav__links { display: none; }
+      .ds-nav__burger { display: flex; }
+    }
+
+    /* ────────────────────────────────────────────────────────────
+       HERO — dark section [D2][D8]
+    ──────────────────────────────────────────────────────────── */
+    #hero {
+      background-color: var(--dark-bg);
+      padding: 120px 0 100px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero__bg-word {
+      position: absolute;
+      right: -0.04em;
+      bottom: -0.12em;
+      font-family: var(--font-display);
+      font-size: clamp(160px, 22vw, 320px);
+      font-weight: 200; /* [D4] 200 for dark large display */
+      line-height: 1;
+      color: rgba(162,123,92,0.04);
+      pointer-events: none;
+      user-select: none;
+      letter-spacing: -4px;
+    }
+
+    .hero__inner { position: relative; z-index: 2; }
+
+    .hero__eyebrow {
+      font-family: var(--font-display);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 5px;
+      text-transform: uppercase;
+      color: var(--chamoisee);
+      margin-bottom: 24px;
+      opacity: 0;
+      animation: fadeUp 1s cubic-bezier(0.16,1,0.3,1) 0.2s forwards;
+    }
+
+    .hero__title {
+      font-family: var(--font-display);
+      font-size: clamp(48px, 8vw, 96px);
+      font-weight: 200;
+      letter-spacing: 6px;
+      text-transform: uppercase;
+      line-height: 1.04;
+      color: var(--bone);
+      margin-bottom: 8px;
+      opacity: 0;
+      animation: fadeUp 1.1s cubic-bezier(0.16,1,0.3,1) 0.35s forwards;
+    }
+
+    .hero__sub {
+      font-family: var(--font-display);
+      font-size: clamp(16px, 2.5vw, 28px);
+      font-weight: 200;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--chamoisee);
+      margin-bottom: 36px;
+      opacity: 0;
+      animation: fadeUp 1.1s cubic-bezier(0.16,1,0.3,1) 0.45s forwards;
+    }
+
+    .hero__desc {
+      font-family: var(--font-body);
+      font-size: 16px;
+      line-height: 1.85;
+      color: var(--bone);
+      max-width: 540px;
+      opacity: 0.75;
+      opacity: 0;
+      animation: fadeUp 1.1s cubic-bezier(0.16,1,0.3,1) 0.6s forwards;
+    }
+
+    .hero__desc strong { color: var(--chamoisee); font-weight: 400; }
+
+    .hero__pills {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 44px;
+      opacity: 0;
+      animation: fadeUp 1s cubic-bezier(0.16,1,0.3,1) 0.75s forwards;
+    }
+
+    .hero__pill {
+      font-family: var(--font-display);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--bone);
+      border: var(--border-width) solid var(--dark-border);
+      border-radius: var(--radius-pill);
+      padding: 8px 22px;
+      transition: border-color 0.3s, color 0.3s;
+    }
+
+    .hero__pill:hover { border-color: var(--chamoisee); color: var(--chamoisee); }
+
+    /* Rationale callout */
+    .rationale {
+      display: flex;
+      gap: 12px;
+      padding: 16px 20px;
+      border-left: 2px solid var(--chamoisee);
+      background: rgba(162,123,92,0.06);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      margin-top: 32px;
+    }
+
+    .rationale--light {
+      background: rgba(162,123,92,0.07);
+      border-color: var(--chamoisee);
+    }
+
+    .rationale__icon {
+      font-family: var(--font-display);
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--chamoisee);
+      letter-spacing: 1px;
+      white-space: nowrap;
+      padding-top: 2px;
+    }
+
+    .rationale__text {
+      font-family: var(--font-body);
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    .rationale--dark .rationale__text { color: rgba(220,215,201,0.7); }
+    .rationale--light .rationale__text { color: var(--muted); }
+
+    .tok {
+      font-family: var(--font-body);
+      font-size: 11px;
+      font-style: italic;
+      color: var(--chamoisee);
+      background: rgba(162,123,92,0.1);
+      padding: 1px 6px;
+      border-radius: 3px;
+    }
+
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 56px;
+      gap: 32px;
+      flex-wrap: wrap;
+    }
+
+    .section-head__note {
+      font-family: var(--font-body);
+      font-size: 13px;
+      line-height: 1.7;
+      color: var(--muted);
+      max-width: 380px;
+    }
+
+    .section-head__note.on-dark { color: rgba(220,215,201,0.6); }
+
+    /* ────────────────────────────────────────────────────────────
+       COLOUR PALETTE
+    ──────────────────────────────────────────────────────────── */
+    .palette-group { margin-bottom: 64px; }
+
+    .palette-group__label {
+      font-family: var(--font-display);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--chamoisee);
+      padding-bottom: 16px;
+      margin-bottom: 28px;
+      border-bottom: var(--border-width) solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .palette-group__count {
+      font-weight: 400;
+      font-style: italic;
+      opacity: 0.5;
+      letter-spacing: 0;
+      text-transform: none;
+    }
+
+    .palette-grid { display: grid; gap: 20px; }
+    .palette-grid--4  { grid-template-columns: repeat(4, 1fr); }
+    .palette-grid--6  { grid-template-columns: repeat(6, 1fr); }
+    .palette-grid--12 { grid-template-columns: repeat(6, 1fr); }
+
+    .swatch { display: flex; flex-direction: column; gap: 10px; }
+
+    .swatch__chip {
+      width: 100%;
+      aspect-ratio: 1 / 0.7;
+      border-radius: var(--radius-sm);
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.35s cubic-bezier(0.16,1,0.3,1), box-shadow 0.35s ease;
+      cursor: default;
+    }
+
+    .swatch__chip::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 55%);
+    }
+
+    .swatch__chip:hover {
+      transform: translateY(-4px) scale(1.025);
+      box-shadow: 0 12px 28px rgba(0,0,0,0.12);
+    }
+
+    /* light chips need a border so they don't disappear */
+    .swatch__chip--light {
+      border: var(--border-width) solid var(--line);
+    }
+
+    .swatch__name {
+      font-family: var(--font-display);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--ink);
+    }
+
+    .swatch__hex {
+      font-family: var(--font-body);
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .swatch__var {
+      font-family: var(--font-body);
+      font-size: 10px;
+      font-style: italic;
+      color: var(--muted);
+      opacity: 0.7;
+    }
+
+    .swatch__use {
+      font-family: var(--font-body);
+      font-size: 10px;
+      color: var(--muted);
+      line-height: 1.5;
+      margin-top: 2px;
+    }
+
+    /* Colour-in-context grid */
+    .colour-context {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-top: 48px;
+    }
+
+    .cctx-card {
+      padding: 28px 24px;
+      border-radius: var(--radius-md);
+      border: var(--border-width) solid var(--line);
+    }
+
+    .cctx-card--dark { background: var(--dark-bg); border-color: var(--dark-border); }
+    .cctx-card--light { background: var(--light); }
+    .cctx-card--warm { background: var(--cream); }
+
+    .cctx-card__label {
+      font-family: var(--font-display);
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-bottom: 18px;
+    }
+
+    .cctx-card--dark .cctx-card__label { color: var(--dark-border); }
+    .cctx-card--light .cctx-card__label,
+    .cctx-card--warm .cctx-card__label  { color: var(--chamoisee); }
+
+    .cctx-card__heading {
+      font-family: var(--font-display);
+      font-size: 22px;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+    }
+
+    .cctx-card--dark .cctx-card__heading { color: var(--chamoisee); }
+    .cctx-card--light .cctx-card__heading { color: var(--chamoisee); }
+    .cctx-card--warm .cctx-card__heading { color: var(--chamoisee); }
+
+    .cctx-card__body {
+      font-family: var(--font-body);
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    .cctx-card--dark .cctx-card__body { color: rgba(220,215,201,0.6); }
+    .cctx-card--light .cctx-card__body,
+    .cctx-card--warm .cctx-card__body  { color: var(--muted); }
+
+    /* ────────────────────────────────────────────────────────────
+       TYPOGRAPHY
+    ──────────────────────────────────────────────────────────── */
+    .font-cards {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-bottom: 56px;
+    }
+
+    .font-card {
+      padding: 36px 32px;
+      border: var(--border-width) solid var(--line);
+      border-radius: var(--radius-md);
+      background: var(--light-secondary);
+    }
+
+    .font-card__role {
+      font-family: var(--font-display);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--chamoisee);
+      margin-bottom: 20px;
+    }
+
+    .font-card__sample { margin-bottom: 20px; }
+
+    .font-card__meta {
+      font-family: var(--font-body);
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .type-table { border-top: var(--border-width) solid var(--line); }
+
+    .type-row {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: 48px;
+      align-items: baseline;
+      padding: 36px 0;
+      border-bottom: var(--border-width) solid var(--line);
+    }
+
+    .type-meta__tag {
+      font-family: var(--font-display);
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--chamoisee);
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    .type-meta__spec {
+      font-family: var(--font-body);
+      font-size: 11px;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .type-meta__class {
+      display: inline-block;
+      font-family: var(--font-body);
+      font-size: 10px;
+      font-style: italic;
+      color: var(--muted);
+      opacity: 0.65;
+      margin-top: 6px;
+      background: rgba(162,123,92,0.08);
+      padding: 2px 7px;
+      border-radius: 3px;
+    }
+
+    /* Production type utilities */
+    .label-text {
+      font-family: var(--font-display);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 5px;
+      text-transform: uppercase;
+      color: var(--chamoisee);
+    }
+
+    .title-h2 {
+      font-family: var(--font-display);
+      font-weight: 400; /* [D4] 400 for light-section headings */
+      font-size: clamp(32px, 5vw, 64px);
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+      color: var(--chamoisee);
+    }
+
+    .title-h2.on-dark { color: var(--bone); }
+    .title-h2.on-ink  { color: var(--ink);  }
+
+    .display-large {
+      font-family: var(--font-display);
+      font-weight: 200; /* [D4] 200 only for dark hero display */
+      font-size: clamp(64px, 10vw, 120px);
+      line-height: 1;
+      letter-spacing: 6px;
+      text-transform: uppercase;
+      color: var(--bone);
+    }
+
+    .body-p {
+      font-family: var(--font-body);
+      font-size: 17px;
+      line-height: 1.85;
+      color: var(--muted);
+    }
+
+    .body-p.on-dark { color: rgba(220,215,201,0.75); }
+
+    .quote-italic {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-weight: 400;
+      font-size: clamp(24px, 3.5vw, 44px);
+      line-height: 1.25;
+      letter-spacing: -0.02em;
+      color: var(--chamoisee);
+    }
+
+    /* ────────────────────────────────────────────────────────────
+       TICKER
+    ──────────────────────────────────────────────────────────── */
+    .ticker-wrap {
+      overflow: hidden;
+      padding: 22px 0;
+      background: var(--dark-bg);
+      border-top: var(--border-width) solid rgba(255,255,255,0.05);
+      border-bottom: var(--border-width) solid rgba(255,255,255,0.05);
+      position: relative;
+    }
+
+    .ticker-track {
+      display: flex;
+      width: max-content;
+      animation: tickerLoop 30s linear infinite;
+    }
+
+    .ticker-item {
+      font-family: var(--font-display);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--bone);
+      white-space: nowrap;
+      padding: 0 44px;
+      display: flex;
+      align-items: center;
+      opacity: 0.8;
+    }
+
+    .ticker-dot {
+      width: 4px; height: 4px;
+      background: var(--chamoisee);
+      border-radius: 50%;
+      display: inline-block;
+      margin-right: 44px;
+    }
+
+    /* ────────────────────────────────────────────────────────────
+       BUTTONS — 3 variants from live site [D9]
+    ──────────────────────────────────────────────────────────── */
+    .btn-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      align-items: center;
+      margin-bottom: 40px;
+    }
+
+    /* Primary — solid bg on hover */
+    .btn-primary {
+      font-family: var(--font-display);
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      color: var(--chamoisee);
+      background: var(--light-secondary);
+      border: var(--border-width) solid var(--light-secondary);
+      border-radius: var(--radius-pill);
+      padding: 13px 28px;
+      transition: background 0.28s, border-color 0.28s, color 0.28s;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-primary:hover {
+      background: var(--gunmetal);
+      border-color: var(--gunmetal);
+      color: var(--bone);
+    }
+
+    /* Secondary — outlined */
+    .btn-secondary {
+      font-family: var(--font-display);
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      color: var(--chamoisee);
+      background: transparent;
+      border: var(--border-width) solid var(--chamoisee);
+      border-radius: var(--radius-pill);
+      padding: 13px 28px;
+      transition: background 0.28s, color 0.28s;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-secondary:hover {
+      background: var(--chamoisee);
+      color: var(--light);
+    }
+
+    /* Tertiary — light fill → brand fill */
+    .btn-tertiary {
+      font-family: var(--font-display);
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      color: var(--chamoisee);
+      background: var(--light);
+      border: var(--border-width) solid var(--light);
+      border-radius: var(--radius-pill);
+      padding: 13px 28px;
+      transition: background 0.28s, border-color 0.28s, color 0.28s;
+      cursor: pointer;
+    }
+
+    .btn-tertiary:hover {
+      background: var(--chamoisee);
+      border-color: var(--chamoisee);
+      color: var(--light);
+    }
+
+    /* On-dark button variant */
+    .btn-ghost-dark {
+      font-family: var(--font-display);
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--bone);
+      background: transparent;
+      border: var(--border-width) solid var(--dark-border);
+      border-radius: var(--radius-pill);
+      padding: 12px 28px;
+      transition: border-color 0.28s, color 0.28s;
+      cursor: pointer;
+    }
+
+    .btn-ghost-dark:hover {
+      border-color: var(--chamoisee);
+      color: var(--chamoisee);
+    }
+
+    /* CTA with arrow motif */
+    .btn-cta-arrow {
+      font-family: var(--font-display);
+      font-size: clamp(28px, 4vw, 56px);
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      color: var(--chamoisee);
+      background: none;
+      border: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 16px;
+      padding: 0;
+      cursor: pointer;
+      transition: gap 0.3s;
+    }
+
+    .btn-cta-arrow:hover { gap: 24px; }
+
+    .btn-cta-arrow .arrow {
+      display: inline-flex;
+      font-size: 0.75em;
+      transition: transform 0.3s;
+    }
+
+    .btn-cta-arrow:hover .arrow { transform: translate(4px, -4px); }
+
+    /* ════ Refined button system (proposed) — shaped + value-driven ════ */
+    .btnx {
+      font-family: var(--font-display);
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 13px 28px;
+      cursor: pointer;
+      border: var(--border-width) solid transparent;
+      border-radius: var(--radius-pill);
+      transition: background 0.28s, border-color 0.28s, color 0.28s,
+                  transform 0.12s ease, box-shadow 0.28s;
+    }
+    .btnx:focus-visible { outline: 2px solid var(--chamoisee); outline-offset: 2px; }
+    .btnx:active { transform: translateY(1px); }
+
+    /* slide-in arrow for solid buttons */
+    .btnx .ico {
+      display: inline-flex;
+      width: 0; opacity: 0; margin-left: -8px; overflow: hidden;
+      transition: width 0.28s cubic-bezier(0.16,1,0.3,1), opacity 0.28s, margin 0.28s;
+    }
+    .btnx:hover .ico, .btnx:focus-visible .ico { width: 0.9em; opacity: 1; margin-left: 0; }
+
+    /* PRIMARY — squared, solid espresso, bone text (10.8:1) */
+    .btnx--solid {
+      border-radius: var(--radius-sm);
+      background: var(--gunmetal);
+      border-color: var(--gunmetal);
+      color: var(--bone);
+    }
+    .btnx--solid:hover { background: #201914; transform: translateY(-2px); box-shadow: 0 8px 22px rgba(30,25,21,0.24); }
+    .btnx--solid:active { transform: translateY(0); box-shadow: 0 3px 10px rgba(30,25,21,0.22); }
+
+    /* PRIMARY (outline) — squared, empty at rest, espresso fills UP on hover */
+    .btnx--fill {
+      border-radius: var(--radius-sm);
+      position: relative;
+      overflow: hidden;
+      background: transparent;
+      border-color: var(--gunmetal);
+      color: var(--gunmetal);
+      z-index: 0;
+    }
+    .btnx--fill::before {
+      content: "";
+      position: absolute; inset: 0;
+      background: var(--gunmetal);
+      opacity: 0;
+      transition: opacity 0.12s ease;
+      z-index: -1;
+    }
+    .btnx--fill:hover, .btnx--fill:focus-visible { color: var(--bone); }
+    .btnx--fill:hover::before, .btnx--fill:focus-visible::before { opacity: 1; }
+
+    /* SECONDARY — pill, chamoisee outline; espresso fill wipes in from left */
+    .btnx--outline {
+      position: relative;
+      overflow: hidden;
+      background: transparent;
+      border-color: var(--chamoisee);
+      color: var(--chamoisee);
+      z-index: 0;
+    }
+    .btnx--outline::before {
+      content: "";
+      position: absolute; inset: 0;
+      background: var(--gunmetal);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.34s cubic-bezier(0.16,1,0.3,1);
+      z-index: -1;
+    }
+    .btnx--outline:hover, .btnx--outline:focus-visible { color: var(--bone); border-color: var(--gunmetal); }
+    .btnx--outline:hover::before, .btnx--outline:focus-visible::before { transform: scaleX(1); }
+
+    /* TERTIARY — quiet text, underline draws in */
+    .btnx--quiet {
+      background: transparent;
+      border-color: transparent;
+      border-radius: 0;
+      padding: 13px 6px;
+      color: var(--chamoisee);
+    }
+    .btnx--quiet .txt {
+      background-image: linear-gradient(var(--chamoisee), var(--chamoisee));
+      background-size: 0% 1px; background-position: 0 100%; background-repeat: no-repeat;
+      padding-bottom: 3px;
+      transition: background-size 0.4s cubic-bezier(0.16,1,0.3,1);
+    }
+    .btnx--quiet:hover .txt, .btnx--quiet:focus-visible .txt { background-size: 100% 1px; }
+
+    /* PRIMARY ON DARK — squared, bone fill, espresso text (10.8:1) */
+    .btnx--solid-dark {
+      border-radius: var(--radius-sm);
+      background: var(--bone);
+      border-color: var(--bone);
+      color: var(--gunmetal);
+    }
+    .btnx--solid-dark:hover { background: #e9e4d7; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.4); }
+    .btnx--solid-dark:active { transform: translateY(0); box-shadow: 0 3px 10px rgba(0,0,0,0.35); }
+    .btnx--solid-dark:focus-visible { outline-color: var(--chamoisee); }
+
+    /* GHOST ON DARK — pill, visible chamoisee outline (4.58:1); wash + chamoisee text on hover */
+    .btnx--ghost {
+      background: transparent;
+      border-color: var(--chamoisee);
+      color: var(--bone);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      font-size: 13px;
+    }
+    .btnx--ghost:hover, .btnx--ghost:focus-visible { background: rgba(162,123,92,0.16); color: var(--chamoisee); }
+    .btnx--ghost:focus-visible { outline-color: var(--chamoisee); }
+
+    /* Filter chips — selected + focus states */
+    .chip-row { display: flex; flex-wrap: wrap; gap: 10px; }
+    .chip {
+      font-family: var(--font-display);
+      font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase;
+      color: var(--chamoisee);
+      background: transparent;
+      border: var(--border-width) solid var(--line);
+      border-radius: var(--radius-pill);
+      padding: 8px 18px;
+      cursor: pointer;
+      display: inline-flex; align-items: center; gap: 7px;
+      transition: border-color 0.22s, color 0.22s, background 0.22s;
+    }
+    .chip:hover { border-color: var(--chamoisee); }
+    .chip:focus-visible { outline: 2px solid var(--chamoisee); outline-offset: 2px; }
+    .chip[aria-pressed="true"] { background: var(--gunmetal); border-color: var(--gunmetal); color: var(--bone); }
+    .chip-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--chamoisee); opacity: 0; transition: opacity 0.2s; }
+    .chip[aria-pressed="true"] .chip-dot { opacity: 1; }
+
+    /* ────────────────────────────────────────────────────────────
+       PRODUCT CARDS
+    ──────────────────────────────────────────────────────────── */
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+    }
+
+    .product-card {
+      background: var(--light-secondary);
+      border: var(--border-width) solid var(--line);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+    }
+
+    .product-card__img {
+      width: 100%;
+      aspect-ratio: 1 / 1.1;
+      background: var(--line);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .product-card__img-inner {
+      position: absolute; inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* placeholder shapes */
+    .img-placeholder {
+      width: 60%;
+      height: 60%;
+      border-radius: 50%;
+      opacity: 0.35;
+    }
+
+    .product-card__body { padding: 20px; }
+
+    .product-card__cat {
+      font-family: var(--font-display);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--chamoisee);
+      margin-bottom: 8px;
+    }
+
+    .product-card__name {
+      font-family: var(--font-display);
+      font-size: 18px;
+      font-weight: 400; /* [D4] headings are Josefin 400, not 600 */
+      letter-spacing: -0.02em;
+      color: var(--ink);
+      margin-bottom: 6px;
+    }
+
+    .product-card__price {
+      font-family: var(--font-body);
+      font-size: 14px;
+      color: var(--muted);
+      margin-bottom: 18px;
+    }
+
+    .product-card__cta {
+      width: 100%;
+      font-family: var(--font-display);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--chamoisee);
+      background: transparent;
+      border: var(--border-width) solid var(--chamoisee);
+      border-radius: var(--radius-sm);
+      padding: 11px 0;
+      transition: background 0.25s, color 0.25s;
+    }
+
+    .product-card__cta:hover {
+      background: var(--chamoisee);
+      color: var(--light);
+    }
+
+    /* ── Gallery-plate product card — borderless, editorial ──── */
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 32px;
+    }
+    @media (max-width: 860px) { .gallery-grid { grid-template-columns: repeat(2, 1fr); gap: 24px; } }
+
+    .gcard { position: relative; }
+
+    .gcard__media {
+      position: relative;
+      aspect-ratio: 4 / 5;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      background: var(--cream);
+      margin-bottom: 16px;
+    }
+
+    .gcard__media-inner {
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      transition: transform 0.8s cubic-bezier(0.16,1,0.3,1);
+    }
+    .gcard:hover .gcard__media-inner { transform: scale(1.05); }
+
+    .gcard__add {
+      position: absolute;
+      bottom: 14px; right: 14px;
+      display: inline-flex; align-items: center; gap: 6px;
+      font-family: var(--font-display);
+      font-size: 10px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase;
+      color: var(--ink);
+      background: rgba(244,245,241,0.9);
+      -webkit-backdrop-filter: blur(8px);
+      backdrop-filter: blur(8px);
+      border: var(--border-width) solid rgba(216,210,200,0.85);
+      border-radius: var(--radius-pill);
+      padding: 9px 16px;
+      cursor: pointer;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 0.35s ease, transform 0.35s cubic-bezier(0.16,1,0.3,1),
+                  background 0.25s, color 0.25s, border-color 0.25s;
+    }
+    .gcard:hover .gcard__add { opacity: 1; transform: translateY(0); }
+    .gcard__add:hover { background: var(--chamoisee); color: var(--light); border-color: var(--chamoisee); }
+    .gcard__add:focus-visible { opacity: 1; transform: translateY(0); outline: 2px solid var(--chamoisee); outline-offset: 2px; }
+
+    .gcard__cat {
+      font-family: var(--font-display);
+      font-size: 10px; font-weight: 600; letter-spacing: 3px; text-transform: uppercase;
+      color: var(--chamoisee);
+      margin-bottom: 8px;
+    }
+
+    .gcard__name {
+      font-family: var(--font-display);
+      font-weight: 400; /* [D4] system-correct heading weight */
+      font-size: 21px;
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+      color: var(--ink);
+      display: inline-block;
+      background-image: linear-gradient(var(--chamoisee), var(--chamoisee));
+      background-size: 0% 1px;
+      background-position: 0 100%;
+      background-repeat: no-repeat;
+      padding-bottom: 3px;
+      transition: background-size 0.45s cubic-bezier(0.16,1,0.3,1);
+    }
+    .gcard:hover .gcard__name { background-size: 100% 1px; }
+
+    .gcard__price {
+      font-family: var(--font-body);
+      font-size: 14px;
+      color: var(--muted);
+      margin-top: 9px;
+    }
+
+    /* ────────────────────────────────────────────────────────────
+       COLLECTION CARDS
+    ──────────────────────────────────────────────────────────── */
+    .collection-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .coll-card {
+      border-radius: var(--radius-md);
+      border: var(--border-width) solid var(--line);
+      overflow: hidden;
+      background: var(--light-secondary);
+    }
+
+    .coll-card__img {
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      background: var(--line);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .coll-card__body { padding: 24px; }
+
+    .coll-card__num {
+      font-family: var(--font-display);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--chamoisee);
+      margin-bottom: 10px;
+    }
+
+    .coll-card__title {
+      font-family: var(--font-display);
+      font-size: 28px;
+      font-weight: 400;
+      letter-spacing: -0.03em;
+      color: var(--ink);
+      margin-bottom: 10px;
+    }
+
+    .coll-card__desc {
+      font-family: var(--font-body);
+      font-size: 14px;
+      line-height: 1.7;
+      color: var(--muted);
+    }
+
+    /* ────────────────────────────────────────────────────────────
+       DARK PATTERNS SECTION — spec grid, nav states, cart
+    ──────────────────────────────────────────────────────────── */
+
+    /* Nav state demos */
+    .nav-demo {
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      border: var(--border-width) solid var(--dark-border);
+      margin-bottom: 20px;
+    }
+
+    .nav-demo__bar {
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 28px;
+    }
+
+    .nav-demo__bar--dark { background: var(--gunmetal); }
+    .nav-demo__bar--glass {
+      background: rgba(36,32,29,0.72);
+      backdrop-filter: blur(20px);
+    }
+    .nav-demo__bar--light {
+      background: rgba(244,245,241,0.88);
+      backdrop-filter: blur(20px);
+    }
+
+    .nav-demo__logo {
+      font-family: var(--font-display);
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: 4px;
+    }
+
+    .nav-demo__links {
+      display: flex;
+      gap: 28px;
+      font-family: var(--font-display);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .nav-demo__caption {
+      font-family: var(--font-display);
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      padding: 10px 28px;
+      background: rgba(0,0,0,0.12);
+    }
+
+    /* Spec row (from style.css .spec-grid) */
+    .spec-grid {
+      border-top: var(--border-width) solid var(--dark-border);
+    }
+
+    .spec-row {
+      display: grid;
+      grid-template-columns: 180px 1fr;
+      gap: 24px;
+      padding: 16px 0;
+      border-bottom: var(--border-width) solid rgba(90,81,72,0.3);
+    }
+
+    .spec-label {
+      font-family: var(--font-display);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--dark-border);
+    }
+
+    .spec-val {
+      font-family: var(--font-body);
+      font-size: 14px;
+      color: var(--bone);
+    }
+
+    /* Material swatches */
+    .mat-grid {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .mat-swatch {
+      width: 52px; height: 52px;
+      border-radius: var(--radius-sm);
+      border: var(--border-width) solid var(--dark-border);
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      position: relative;
+    }
+
+    .mat-swatch.active {
+      border-color: var(--chamoisee);
+      box-shadow: 0 0 0 2px var(--chamoisee);
+      transform: scale(1.08);
+    }
+
+    /* Cart drawer mini */
+    .cart-mini {
+      background: var(--light-secondary);
+      border: var(--border-width) solid var(--line);
+      border-radius: var(--radius-md);
+      padding: 24px;
+      max-width: 340px;
+    }
+
+    .cart-mini__header {
+      font-family: var(--font-display);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--chamoisee);
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: var(--border-width) solid var(--line);
+    }
+
+    .cart-item {
+      display: flex;
+      gap: 16px;
+      padding: 16px 0;
+      border-bottom: var(--border-width) solid var(--line);
+      align-items: center;
+    }
+
+    .cart-item__thumb {
+      width: 56px; height: 56px;
+      border-radius: var(--radius-sm);
+      background: var(--line);
+      flex-shrink: 0;
+    }
+
+    .cart-item__name {
+      font-family: var(--font-display);
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--ink);
+      margin-bottom: 4px;
+    }
+
+    .cart-item__price {
+      font-family: var(--font-body);
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    /* ────────────────────────────────────────────────────────────
+       SPACING TOKENS
+    ──────────────────────────────────────────────────────────── */
+    .token-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .token-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 16px 20px;
+      border: var(--border-width) solid var(--line);
+      border-radius: var(--radius-sm);
+      background: var(--light-secondary);
+    }
+
+    .token-bar {
+      height: 6px;
+      background: var(--chamoisee);
+      border-radius: 3px;
+      flex-shrink: 0;
+    }
+
+    .token-name {
+      font-family: var(--font-display);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      color: var(--ink);
+      flex: 1;
+    }
+
+    .token-val {
+      font-family: var(--font-body);
+      font-size: 11px;
+      font-style: italic;
+      color: var(--muted);
+    }
+
+    /* ────────────────────────────────────────────────────────────
+       FOOTER PATTERN
+    ──────────────────────────────────────────────────────────── */
+    .footer-demo {
+      background: var(--light);
+      border-top: var(--border-width) solid var(--line);
+      padding: 64px 0 40px;
+    }
+
+    .footer-cta-line {
+      margin-bottom: 64px;
+    }
+
+    .footer-cta-eyebrow {
+      font-family: var(--font-display);
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+      gap: 32px;
+      padding-top: 48px;
+      border-top: var(--border-width) solid var(--line);
+    }
+
+    .footer-wordmark {
+      font-family: var(--font-display);
+      font-size: 28px;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      color: var(--chamoisee);
+    }
+
+    .footer-col__heading {
+      font-family: var(--font-display);
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      color: var(--chamoisee);
+      margin-bottom: 20px;
+    }
+
+    .footer-col__links {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .footer-col__links a {
+      font-family: var(--font-body);
+      font-size: 14px;
+      color: var(--muted);
+      transition: color 0.2s;
+    }
+
+    .footer-col__links a:hover { color: var(--chamoisee); }
+
+    .footer-legal {
+      margin-top: 48px;
+      padding-top: 20px;
+      border-top: var(--border-width) solid var(--line);
+      font-family: var(--font-body);
+      font-size: 11px;
+      color: var(--muted);
+      opacity: 0.65;
+      display: flex;
+      justify-content: space-between;
+    }
+    /* ────────────────────────────────────────────────────────────
+       SECTION USAGE GUIDE — light vs dark registers [D2][D3][D4]
+    ──────────────────────────────────────────────────────────── */
+    .usage-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-bottom: 32px;
+    }
+    @media (max-width: 860px) { .usage-grid { grid-template-columns: 1fr; } }
+
+    .usage-panel {
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      border: var(--border-width) solid var(--line);
+    }
+    .usage-panel--light { background: var(--light); }
+    .usage-panel--dark  { background: var(--dark-bg); border-color: var(--dark-border); position: relative; }
+
+    .usage-demo { padding: 40px 36px; position: relative; z-index: 2; }
+
+    .usage-tag {
+      position: absolute;
+      top: 16px; right: 16px;
+      z-index: 3;
+      font-family: var(--font-display);
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      border-radius: var(--radius-pill);
+    }
+    .usage-panel--light .usage-tag { background: var(--cream); color: var(--muted); }
+    .usage-panel--dark  .usage-tag { background: rgba(220,215,201,0.12); color: var(--bone); }
+
+    .usage-eyebrow {
+      display: block;
+      font-family: var(--font-display);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--chamoisee);
+      margin-bottom: 18px;
+    }
+
+    .usage-h {
+      font-family: var(--font-display);
+      font-weight: 400; /* [D4] light + dark headings both 400 */
+      font-size: clamp(26px, 3.4vw, 38px);
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      color: var(--chamoisee); /* [D3] chamoisee heading in both registers */
+      margin-bottom: 16px;
+    }
+
+    .usage-body {
+      font-family: var(--font-body);
+      font-size: 15px;
+      line-height: 1.8;
+      margin-bottom: 14px;
+    }
+    .usage-panel--light .usage-body { color: var(--ink); }
+    .usage-panel--dark  .usage-body { color: var(--bone); }
+
+    .usage-cap {
+      font-family: var(--font-body);
+      font-size: 12px;
+      line-height: 1.6;
+      margin-bottom: 22px;
+    }
+    .usage-panel--light .usage-cap { color: var(--muted); }
+    .usage-panel--dark  .usage-cap { color: rgba(220,215,201,0.6); }
+
+    .usage-divider { height: var(--border-width); margin-bottom: 22px; }
+    .usage-panel--light .usage-divider { background: var(--line); }
+    .usage-panel--dark  .usage-divider { background: var(--dark-border); }
+
+    .usage-link {
+      font-family: var(--font-display);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--chamoisee);
+      display: inline-flex;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .usage-rules {
+      list-style: none;
+      padding: 22px 36px 34px;
+      border-top: var(--border-width) solid;
+      display: flex;
+      flex-direction: column;
+      gap: 13px;
+      position: relative;
+      z-index: 2;
+    }
+    .usage-panel--light .usage-rules { border-color: var(--line); }
+    .usage-panel--dark  .usage-rules { border-color: var(--dark-border); }
+
+    .usage-rule {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-family: var(--font-body);
+      font-size: 12.5px;
+      line-height: 1.5;
+    }
+    .usage-panel--light .usage-rule { color: var(--ink); }
+    .usage-panel--dark  .usage-rule { color: rgba(220,215,201,0.85); }
+    .usage-rule code {
+      font-family: var(--font-body);
+      font-style: italic;
+      color: var(--chamoisee);
+    }
+
+    .cbadge {
+      flex-shrink: 0;
+      font-family: var(--font-display);
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      padding: 3px 9px;
+      border-radius: var(--radius-pill);
+      white-space: nowrap;
+      margin-top: 1px;
+    }
+    .cbadge--aa    { background: rgba(77,124,90,0.16);  color: #3f6b4c; }
+    .cbadge--large { background: rgba(154,107,47,0.18); color: #8a5f29; }
+    .usage-panel--dark .cbadge--aa    { background: rgba(140,185,150,0.18); color: #9cc7a7; }
+    .usage-panel--dark .cbadge--large { background: rgba(205,160,95,0.2);   color: #e0b878; }
+
+    .usage-fonts {
+      border: var(--border-width) solid var(--line);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+    }
+    .usage-fonts__row {
+      display: grid;
+      grid-template-columns: 150px 1fr 1.4fr;
+      gap: 20px;
+      padding: 16px 28px;
+      align-items: baseline;
+      border-bottom: var(--border-width) solid var(--line);
+    }
+    .usage-fonts__row:last-child { border-bottom: 0; }
+    .usage-fonts__row--head { background: var(--cream); align-items: center; }
+    .usage-fonts__row--head span {
+      font-family: var(--font-display);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .usage-fonts__spec { font-family: var(--font-display); font-size: 13px; font-weight: 600; color: var(--ink); }
+    .usage-fonts__role { font-family: var(--font-body);    font-size: 13px; color: var(--ink); }
+    .usage-fonts__where { font-family: var(--font-body);   font-size: 12px; color: var(--muted); line-height: 1.5; }
+    @media (max-width: 860px) { .usage-fonts__row { grid-template-columns: 1fr; gap: 4px; } }
+
+  </style>
+</head>
+<body>
+
+  <!-- ══ DS NAV ═══════════════════════════════════════════════ -->
+  <nav class="ds-nav">
+    <div class="ds-nav__logo">
+      <a href="#" aria-label="Noku Home">
+        <svg class="logo-svg" width="84" height="21" viewBox="0 0 328.86 81.97" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="67.75 2.09 67.75 81.28 54.37 81.28 54.37 53.95 13.38 26.49 13.38 81.28 0 81.28 0 0 54.37 37.78 54.37 2.09 67.75 2.09"/>
+          <path d="m164.64,41.54c0,22.31-18.12,40.43-40.43,40.43s-40.43-18.12-40.43-40.43S101.91,1.12,124.21,1.12s40.43,18.12,40.43,40.43m-13.38.42c0-15.89-11.29-28.58-27.18-28.58s-26.91,12.69-26.91,28.58,11.01,28.44,26.91,28.44,27.18-12.55,27.18-28.44"/>
+          <polygon points="235.04 81.28 210.23 40.29 194.06 57.86 194.06 81.28 180.67 81.28 180.67 2.09 194.06 2.09 194.06 38.48 227.09 2.09 245.36 2.09 219.43 30.25 250.79 81.28 235.04 81.28"/>
+          <path d="m262.5,46.42V2.09h13.38v44.33c0,16.03,5.3,23.98,19.8,23.98s19.8-7.95,19.8-23.98V2.09h13.38v44.33c0,21.89-11.15,35.55-33.04,35.55s-33.32-13.66-33.32-35.55"/>
+        </svg>
+      </a>
+    </div>
+    <ul class="ds-nav__links">
+      <li><a href="#palette">Palette</a></li>
+      <li><a href="#type">Type</a></li>
+      <li><a href="#usage">Sections</a></li>
+      <li><a href="#buttons">Buttons</a></li>
+      <li><a href="#cards">Cards</a></li>
+      <li><a href="#patterns">Patterns</a></li>
+      <li><a href="#tokens">Tokens</a></li>
+    </ul>
+    <button class="ds-nav__cart" aria-label="Open Shopping Cart">
+      <svg class="cart-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+        <line x1="3" y1="6" x2="21" y2="6"></line>
+        <path d="M16 10a4 4 0 0 1-8 0"></path>
+      </svg>
+      <span class="ds-nav__cart-count">0</span>
+    </button>
+    <button class="ds-nav__burger" aria-label="Toggle Mobile Menu">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <line x1="4" y1="6" x2="20" y2="6"></line>
+        <line x1="4" y1="12" x2="20" y2="12"></line>
+        <line x1="4" y1="18" x2="20" y2="18"></line>
+      </svg>
+    </button>
+  </nav>
+
+  <!-- ══ HERO — dark section ══════════════════════════════════ -->
+  <section id="hero" class="bg-dark">
+    <div class="grain-overlay"></div>
+    <div class="hero__bg-word">DS</div>
+    <div class="container hero__inner">
+      <p class="hero__eyebrow">Noku Studio · Brand System</p>
+      <h1 class="hero__title">Every token,<br>every intention.</h1>
+      <p class="hero__sub">Variant A · Warm-Unified</p>
+      <p class="hero__desc">
+        <strong>Every neutral shares the 27° warm bias.</strong> The two cool
+        teals (gunmetal, outerspace) are re-cast as warm charcoal and espresso,
+        so darks, lights, and the chamoisee accent all sit in one temperature
+        family — earthy, cohesive, wood-and-clay. Tokens keep their style.css
+        slugs for drop-in compatibility.
+      </p>
+      <div class="hero__pills">
+        <a href="#palette" class="hero__pill">Palette</a>
+        <a href="#type" class="hero__pill">Typography</a>
+        <a href="#buttons" class="hero__pill">Buttons</a>
+        <a href="#cards" class="hero__pill">Cards</a>
+        <a href="#patterns" class="hero__pill">Patterns</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ PALETTE ═══════════════════════════════════════════════ -->
+  <section id="palette" class="bg-light section-pad">
+    <div class="container">
+      <div class="section-head reveal">
+        <div>
+          <p class="label-text" style="margin-bottom:12px">01 — Colour Palette</p>
+          <h2 class="title-h2">12 tokens. One warmth.</h2>
+        </div>
+        <p class="section-head__note">
+          Primary 4 tokens define brand identity. Secondary 8 are surface,
+          text, and border tokens — covering both light and dark sections.
+        </p>
+      </div>
+
+      <!-- Primary Brand Palette -->
+      <div class="palette-group reveal">
+        <div class="palette-group__label">
+          Primary Brand
+          <span class="palette-group__count">4 tokens — brand identity</span>
+        </div>
+        <div class="palette-grid palette-grid--4">
+          <div class="swatch">
+            <div class="swatch__chip" style="background:#2A231E"></div>
+            <div class="swatch__name">Espresso</div>
+            <div class="swatch__hex">#2A231E</div>
+            <div class="swatch__var">--gunmetal</div>
+            <div class="swatch__use">Nav bg, dark surfaces · warm-recast</div>
+          </div>
+          <div class="swatch">
+            <div class="swatch__chip" style="background:#a27b5c"></div>
+            <div class="swatch__name">Chamoisee</div>
+            <div class="swatch__hex">#A27B5C</div>
+            <div class="swatch__var">--chamoisee</div>
+            <div class="swatch__use">Primary brand text + accent [D3]</div>
+          </div>
+          <div class="swatch">
+            <div class="swatch__chip" style="background:#392F28"></div>
+            <div class="swatch__name">Cocoa</div>
+            <div class="swatch__hex">#392F28</div>
+            <div class="swatch__var">--outerspace</div>
+            <div class="swatch__use">Elevated dark surface · warm-recast</div>
+          </div>
+          <div class="swatch">
+            <div class="swatch__chip" style="background:#dcd7c9"></div>
+            <div class="swatch__name">Bone</div>
+            <div class="swatch__hex">#DCD7C9</div>
+            <div class="swatch__var">--bone</div>
+            <div class="swatch__use">Body text on dark sections</div>
+          </div>
+        </div>
+
+        <div class="rationale rationale--light">
+          <span class="rationale__icon">D3</span>
+          <p class="rationale__text">
+            On <span class="tok">nokustudio.in</span>, <span class="tok">--chamoisee</span>
+            (#a27b5c) renders every nav link, heading, CTA, and footer link on light
+            backgrounds. It is not an accent — it is the primary brand text color.
+            On dark backgrounds it flips to highlight/accent role. Same token, dual context.
+          </p>
+        </div>
+      </div>
+
+      <!-- Secondary Palette -->
+      <div class="palette-group reveal">
+        <div class="palette-group__label">
+          Secondary Surface &amp; Text
+          <span class="palette-group__count">8 tokens — surface, text, border</span>
+        </div>
+        <div class="palette-grid palette-grid--4">
+          <div class="swatch">
+            <div class="swatch__chip swatch__chip--light" style="background:#f4f5f1"></div>
+            <div class="swatch__name">Light</div>
+            <div class="swatch__hex">#F4F5F1</div>
+            <div class="swatch__var">--light ★</div>
+            <div class="swatch__use">Live site default bg</div>
+          </div>
+          <div class="swatch">
+            <div class="swatch__chip swatch__chip--light" style="background:#fafaf8"></div>
+            <div class="swatch__name">Light Sec.</div>
+            <div class="swatch__hex">#FAFAF8</div>
+            <div class="swatch__var">--light-secondary ★</div>
+            <div class="swatch__use">Card backgrounds</div>
+          </div>
+          <div class="swatch">
+            <div class="swatch__chip swatch__chip--light" style="background:#EDE6DA"></div>
+            <div class="swatch__name">Cream</div>
+            <div class="swatch__hex">#EDE6DA</div>
+            <div class="swatch__var">--cream</div>
+            <div class="swatch__use">Warm alt sections, materials</div>
+          </div>
+          <div class="swatch">
+            <div class="swatch__chip" style="background:#2C2622"></div>
+            <div class="swatch__name">Ink</div>
+            <div class="swatch__hex">#2C2622</div>
+            <div class="swatch__var">--ink</div>
+            <div class="swatch__use">Primary text on light</div>
+          </div>
+          <div class="swatch">
+            <div class="swatch__chip" style="background:#6B6258"></div>
+            <div class="swatch__name">Muted</div>
+            <div class="swatch__hex">#6B6258</div>
+            <div class="swatch__var">--muted</div>
+            <div class="swatch__use">Body text + quiet labels</div>
+          </div>
+          <div class="swatch">
+            <div class="swatch__chip swatch__chip--light" style="background:#D8D2C8"></div>
+            <div class="swatch__name">Line</div>
+            <div class="swatch__hex">#D8D2C8</div>
+            <div class="swatch__var">--line</div>
+            <div class="swatch__use">All dividers + soft borders</div>
+          </div>
+          <div class="swatch">
+            <div class="swatch__chip" style="background:#1E1915"></div>
+            <div class="swatch__name">Dark BG</div>
+            <div class="swatch__hex">#1E1915</div>
+            <div class="swatch__var">--dark-bg</div>
+            <div class="swatch__use">Hero, narrative, ticker</div>
+          </div>
+          <div class="swatch">
+            <div class="swatch__chip" style="background:#4F4339"></div>
+            <div class="swatch__name">Dark Border</div>
+            <div class="swatch__hex">#4F4339</div>
+            <div class="swatch__var">--dark-border</div>
+            <div class="swatch__use">Dividers on dark sections</div>
+          </div>
+        </div>
+        <p style="font-family:var(--font-display);font-size:10px;font-weight:600;letter-spacing:2px;color:var(--chamoisee);margin-top:20px;">★ Sourced from nokustudio.in live site &nbsp;·&nbsp; Consolidated 12 → 8 tokens (removed --paper/--deep-muted/--light-muted/--border-soft)</p>
+      </div>
+
+      <!-- Colour in context -->
+      <div class="reveal">
+        <p class="label-text" style="margin-bottom:24px">Colour in context</p>
+        <div class="colour-context">
+          <div class="cctx-card cctx-card--dark">
+            <p class="cctx-card__label">Dark section</p>
+            <h3 class="cctx-card__heading">Of Stillness</h3>
+            <p class="cctx-card__body">--chamoisee as heading highlight on dark-bg. --bone for body. --dark-border for lines.</p>
+          </div>
+          <div class="cctx-card cctx-card--light">
+            <p class="cctx-card__label">Light section (live brand default)</p>
+            <h3 class="cctx-card__heading">Featured Pieces</h3>
+            <p class="cctx-card__body">--chamoisee as heading text. --muted for body. --line for card borders.</p>
+          </div>
+          <div class="cctx-card cctx-card--warm">
+            <p class="cctx-card__label">Warm alt section</p>
+            <h3 class="cctx-card__heading">The Tura Chair</h3>
+            <p class="cctx-card__body">--cream bg for materials, configurator, warm moments. Same text roles — chamoisee headings, muted body.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ TICKER ════════════════════════════════════════════════ -->
+  <div class="ticker-wrap">
+    <div class="grain-overlay"></div>
+    <div class="ticker-track">
+      <span class="ticker-item"><span class="ticker-dot"></span>Contemporary Indian Furniture</span>
+      <span class="ticker-item"><span class="ticker-dot"></span>Designed with Intent</span>
+      <span class="ticker-item"><span class="ticker-dot"></span>Crafted with Care</span>
+      <span class="ticker-item"><span class="ticker-dot"></span>Pieces for Living</span>
+      <span class="ticker-item"><span class="ticker-dot"></span>Bengaluru Studio</span>
+      <span class="ticker-item"><span class="ticker-dot"></span>Noku Studio</span>
+      <span class="ticker-item"><span class="ticker-dot"></span>Contemporary Indian Furniture</span>
+      <span class="ticker-item"><span class="ticker-dot"></span>Designed with Intent</span>
+      <span class="ticker-item"><span class="ticker-dot"></span>Crafted with Care</span>
+      <span class="ticker-item"><span class="ticker-dot"></span>Pieces for Living</span>
+      <span class="ticker-item"><span class="ticker-dot"></span>Bengaluru Studio</span>
+      <span class="ticker-item"><span class="ticker-dot"></span>Noku Studio</span>
+    </div>
+  </div>
+
+  <!-- ══ TYPOGRAPHY ════════════════════════════════════════════ -->
+  <section id="type" class="bg-light section-pad">
+    <div class="container">
+      <div class="section-head reveal">
+        <div>
+          <p class="label-text" style="margin-bottom:12px">02 — Typography</p>
+          <h2 class="title-h2">Two families. Clear hierarchy.</h2>
+        </div>
+        <p class="section-head__note">
+          Josefin Sans handles all display and UI. Quattrocento handles body copy.
+          Weight 200 is exclusive to large dark-section display numbers.
+        </p>
+      </div>
+
+      <!-- Font cards -->
+      <div class="font-cards reveal">
+        <div class="font-card">
+          <p class="font-card__role">Display & UI — Josefin Sans</p>
+          <div class="font-card__sample">
+            <p style="font-family:var(--font-display);font-weight:200;font-size:48px;letter-spacing:5px;color:var(--chamoisee);line-height:1">LIGHT 200</p>
+            <p style="font-family:var(--font-display);font-weight:400;font-size:40px;letter-spacing:-0.03em;color:var(--ink);line-height:1.1;margin-top:8px">Regular 400</p>
+            <p style="font-family:var(--font-display);font-weight:600;font-size:32px;letter-spacing:-0.02em;color:var(--ink);line-height:1.1;margin-top:8px">Medium 600</p>
+            <p style="font-family:var(--font-display);font-weight:700;font-size:24px;letter-spacing:-0.02em;color:var(--ink);line-height:1.1;margin-top:8px">Bold 700</p>
+          </div>
+          <p class="font-card__meta">
+            <strong>200</strong> — dark hero display only<br>
+            <strong>400</strong> — section headings, light bg standard<br>
+            <strong>600</strong> — nav, labels, CTAs, product names<br>
+            <strong>700</strong> — high emphasis callouts<br>
+            Letter-spacing: <strong>-0.03em</strong> for headings
+          </p>
+        </div>
+        <div class="font-card">
+          <p class="font-card__role">Body & Captions — Quattrocento</p>
+          <div class="font-card__sample">
+            <p style="font-family:var(--font-body);font-weight:400;font-size:18px;color:var(--ink);line-height:1.85">A studio of designers, creatives, and craftsmen creating the future of Indian furniture.</p>
+            <p style="font-family:var(--font-body);font-weight:400;font-style:italic;font-size:14px;color:var(--muted);line-height:1.7;margin-top:16px">Caption text, metadata, spec values, dates — all Quattrocento 400.</p>
+          </div>
+          <p class="font-card__meta">
+            <strong>400</strong> — all body text, one weight only<br>
+            Letter-spacing: <strong>0em</strong><br>
+            Line-height: <strong>1.85</strong> for body, <strong>1.7</strong> for small
+          </p>
+        </div>
+      </div>
+
+      <!-- Type scale table -->
+      <div class="type-table reveal">
+
+        <div class="type-row">
+          <div>
+            <span class="type-meta__tag">Display</span>
+            <p class="type-meta__spec">Josefin Sans 200<br>clamp(64px → 120px)<br>ls: 6px · dark sections</p>
+            <code class="type-meta__class">.display-large</code>
+          </div>
+          <p style="font-family:var(--font-display);font-weight:200;font-size:clamp(40px,6vw,80px);letter-spacing:4px;text-transform:uppercase;color:var(--chamoisee);line-height:1">NOKU</p>
+        </div>
+
+        <div class="type-row">
+          <div>
+            <span class="type-meta__tag">H1 / Hero Heading</span>
+            <p class="type-meta__spec">Josefin Sans 400<br>5rem (80px)<br>ls: -0.03em</p>
+            <code class="type-meta__class">h1 / .title-h1</code>
+          </div>
+          <p style="font-family:var(--font-display);font-weight:400;font-size:clamp(32px,5vw,64px);letter-spacing:-0.03em;color:var(--chamoisee);line-height:1.1">Of Stillness</p>
+        </div>
+
+        <div class="type-row">
+          <div>
+            <span class="type-meta__tag">H2 / Section Heading</span>
+            <p class="type-meta__spec">Josefin Sans 400<br>4rem (64px)<br>ls: -0.03em</p>
+            <code class="type-meta__class">h2 / .title-h2</code>
+          </div>
+          <p style="font-family:var(--font-display);font-weight:400;font-size:clamp(28px,4vw,52px);letter-spacing:-0.03em;color:var(--chamoisee);line-height:1.1">Featured Pieces</p>
+        </div>
+
+        <div class="type-row">
+          <div>
+            <span class="type-meta__tag">H3 / Card Heading</span>
+            <p class="type-meta__spec">Josefin Sans 400<br>3rem (48px)<br>ls: -0.03em</p>
+            <code class="type-meta__class">h3 / .title-h3</code>
+          </div>
+          <p style="font-family:var(--font-display);font-weight:400;font-size:clamp(22px,3vw,38px);letter-spacing:-0.03em;color:var(--chamoisee);line-height:1.1">The Tura Chair</p>
+        </div>
+
+        <div class="type-row">
+          <div>
+            <span class="type-meta__tag">Label / Eyebrow</span>
+            <p class="type-meta__spec">Josefin Sans 600<br>11px · ls: 5px<br>uppercase</p>
+            <code class="type-meta__class">.label-text / .label</code>
+          </div>
+          <p class="label-text">Collection 01 — Of Stillness</p>
+        </div>
+
+        <div class="type-row">
+          <div>
+            <span class="type-meta__tag">Body / Paragraph</span>
+            <p class="type-meta__spec">Quattrocento 400<br>17px · lh: 1.85</p>
+            <code class="type-meta__class">.body-p</code>
+          </div>
+          <p class="body-p" style="max-width:520px">Mid-Century Modern forms rooted in simplicity and material honesty. Every detail chosen with intent — every joint, every grain, every proportion.</p>
+        </div>
+
+        <div class="type-row">
+          <div>
+            <span class="type-meta__tag">Quote / Italic</span>
+            <p class="type-meta__spec">Josefin Sans italic 400<br>clamp(24px → 44px)<br>ls: -0.02em</p>
+            <code class="type-meta__class">.quote-italic</code>
+          </div>
+          <p class="quote-italic" style="max-width:600px">"An exploration of the essence behind the art and craft spread across this diverse country."</p>
+        </div>
+
+      </div>
+
+      <div class="rationale rationale--light reveal" style="margin-top:40px">
+        <span class="rationale__icon">D4 · D5</span>
+        <p class="rationale__text">
+          The live site uses Josefin Sans at <strong>400</strong> for section headings — not the ultra-light
+          200-300 visible in our local dark-hero panels. Weight 200 is architecturally correct at 80px+
+          on a dark canvas (visual mass comes from scale). At 40-64px on a light background, 400 is
+          the appropriate weight — it has presence without feeling heavy. Nav and labels always use
+          <strong>600</strong> confirming Josefin Sans as the sole display AND UI typeface.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ SECTION USAGE — light vs dark registers ══════════════ -->
+  <section id="usage" class="bg-light section-pad">
+    <div class="container">
+      <div class="section-head reveal">
+        <div>
+          <p class="label-text" style="margin-bottom:12px">03 — Section Usage</p>
+          <h2 class="title-h2">Two registers. One palette.</h2>
+        </div>
+        <p class="section-head__note">
+          Not a light/dark mode toggle — one palette used two ways. Which colour
+          and type roles apply depends on the section background. Chamoisee leads
+          headings in both registers; everything else flips for contrast.
+        </p>
+      </div>
+
+      <div class="usage-grid reveal">
+        <!-- LIGHT register -->
+        <div class="usage-panel usage-panel--light">
+          <div class="usage-demo">
+            <span class="usage-tag">Light section</span>
+            <span class="usage-eyebrow">Featured · Eyebrow 600</span>
+            <h3 class="usage-h">A Quiet Confidence</h3>
+            <p class="usage-body">
+              Body copy is set in <strong style="font-weight:700;color:var(--ink)">ink</strong>
+              with Quattrocento for long-form legibility — it carries the reading
+              weight so the warm chamoisee can stay reserved for headings.
+            </p>
+            <p class="usage-cap">Caption and metadata sit in muted — quieter, still AA-legible.</p>
+            <div class="usage-divider"></div>
+            <a class="usage-link">View the collection ↗</a>
+          </div>
+          <ul class="usage-rules">
+            <li class="usage-rule"><span class="cbadge cbadge--large">AA Large · 3.5:1</span><span><code>--chamoisee</code> for headings, links, eyebrows — large or 600 weight only. Never body copy on light.</span></li>
+            <li class="usage-rule"><span class="cbadge cbadge--aa">AA · 13.6:1</span><span><code>--ink</code> body copy — the legibility workhorse on light surfaces.</span></li>
+            <li class="usage-rule"><span class="cbadge cbadge--aa">AA · 5.5:1</span><span><code>--muted</code> captions, metadata, secondary text.</span></li>
+            <li class="usage-rule"><span class="cbadge cbadge--aa">Surfaces</span><span><code>--line</code> dividers &amp; borders. Backgrounds: <code>--light</code> base, <code>--light-secondary</code> cards, <code>--cream</code> warm zones.</span></li>
+          </ul>
+        </div>
+
+        <!-- DARK register -->
+        <div class="usage-panel usage-panel--dark">
+          <div class="grain-overlay"></div>
+          <div class="usage-demo">
+            <span class="usage-tag">Dark section</span>
+            <span class="usage-eyebrow">Featured · Eyebrow 600</span>
+            <h3 class="usage-h">Of Stillness</h3>
+            <p class="usage-body">
+              On dark the body flips to <strong style="font-weight:700;color:var(--bone)">bone</strong> —
+              a warm off-white holding 12:1 contrast. Chamoisee gains contrast here
+              too, so it can carry more than just headings.
+            </p>
+            <p class="usage-cap">Captions use bone at 60% — dimmed, still AA at 5.1:1.</p>
+            <div class="usage-divider"></div>
+            <a class="usage-link">View the collection ↗</a>
+          </div>
+          <ul class="usage-rules">
+            <li class="usage-rule"><span class="cbadge cbadge--aa">AA · 4.6:1</span><span><code>--chamoisee</code> headings + highlights — passes body size on dark, vs large-only on light.</span></li>
+            <li class="usage-rule"><span class="cbadge cbadge--aa">AA · 12.1:1</span><span><code>--bone</code> body copy — the light-on-dark workhorse.</span></li>
+            <li class="usage-rule"><span class="cbadge cbadge--aa">AA · 5.1:1</span><span><code>--bone</code> at 60–70% opacity for captions &amp; dimmed text.</span></li>
+            <li class="usage-rule"><span class="cbadge cbadge--large">Decorative</span><span><code>--dark-border</code> dividers (1.8:1 — lines only, never text). Grain overlay at 3.5% adds analog texture.</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <p class="label-text reveal" style="margin-bottom:20px">Type by weight — where each register uses it</p>
+      <div class="usage-fonts reveal">
+        <div class="usage-fonts__row usage-fonts__row--head">
+          <span>Family / Weight</span>
+          <span>Role</span>
+          <span>Where it applies</span>
+        </div>
+        <div class="usage-fonts__row">
+          <div class="usage-fonts__spec">Josefin Sans 200</div>
+          <div class="usage-fonts__role">Display backdrop</div>
+          <div class="usage-fonts__where">Dark sections only, ≥120px. Visual mass comes from scale, not weight — reads as a ghosted word behind the hero.</div>
+        </div>
+        <div class="usage-fonts__row">
+          <div class="usage-fonts__spec">Josefin Sans 400</div>
+          <div class="usage-fonts__role">Section headings</div>
+          <div class="usage-fonts__where">Both registers. Tracking −0.03em. Chamoisee on light &amp; dark; bone when a heading must sit at body weight on dark.</div>
+        </div>
+        <div class="usage-fonts__row">
+          <div class="usage-fonts__spec">Josefin Sans 600</div>
+          <div class="usage-fonts__role">Nav · eyebrows · labels · CTAs</div>
+          <div class="usage-fonts__where">Both registers. Uppercase, tracking +2–5px. Chamoisee or muted on light; bone or chamoisee on dark.</div>
+        </div>
+        <div class="usage-fonts__row">
+          <div class="usage-fonts__spec">Quattrocento 400</div>
+          <div class="usage-fonts__role">Body copy · captions</div>
+          <div class="usage-fonts__where">Both registers. Ink body / muted captions on light; bone body / bone-60% captions on dark.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ BUTTONS ═══════════════════════════════════════════════ -->
+  <section id="buttons" class="bg-light2 section-pad">
+    <div class="container">
+      <div class="section-head reveal">
+        <div>
+          <p class="label-text" style="margin-bottom:12px">04 — Buttons</p>
+          <h2 class="title-h2">Three variants. One accent.</h2>
+        </div>
+        <p class="section-head__note">
+          All buttons use --chamoisee as the primary color. Hover states move
+          toward filled/inverted — never a second accent color.
+        </p>
+      </div>
+
+      <div class="btn-grid reveal">
+        <button class="btn-primary">Explore now →</button>
+        <button class="btn-secondary">View Collection</button>
+        <button class="btn-tertiary">Add to Cart</button>
+      </div>
+
+      <div style="background:var(--dark-bg);padding:40px;border-radius:var(--radius-md);margin-bottom:40px;" class="reveal">
+        <div class="grain-overlay" style="border-radius:var(--radius-md)"></div>
+        <p class="label-text" style="margin-bottom:20px;position:relative;z-index:2">On dark background</p>
+        <div class="btn-grid" style="position:relative;z-index:2">
+          <button class="btn-ghost-dark">Explore now</button>
+          <button class="btn-ghost-dark">View Collection</button>
+        </div>
+      </div>
+
+      <!-- CTA arrow motif from live site -->
+      <div class="reveal" style="padding:48px 0 32px">
+        <p class="label-text" style="margin-bottom:20px">CTA arrow motif — from nokustudio.in footer</p>
+        <div>
+          <p style="font-family:var(--font-display);font-size:16px;font-weight:600;letter-spacing:3px;color:var(--muted);text-transform:uppercase;margin-bottom:8px">Ready to</p>
+          <button class="btn-cta-arrow">Craft your furniture?<span class="arrow">↗</span></button>
+        </div>
+      </div>
+
+      <div class="rationale rationale--light reveal">
+        <span class="rationale__icon">D9 · D10</span>
+        <p class="rationale__text">
+          All button borders use <span class="tok">border-radius: 100vw</span> (pill) matching
+          the live site's <span class="tok">--radius--round</span>. The live site also uses
+          1rem (16px) cards and 0.5rem (8px) for small UI — our <span class="tok">--radius-md</span>
+          and <span class="tok">--radius-sm</span>. Border width: 1px (<span class="tok">--border-width</span>).
+          The live site specifies 1.5px main / 0.8px on buttons — we use 1px as a clean midpoint.
+        </p>
+      </div>
+
+      <!-- ═══ Refined button system (proposed) ═══ -->
+      <div class="reveal" style="margin-top:72px;padding-top:44px;border-top:var(--border-width) solid var(--line)">
+        <p class="label-text" style="margin-bottom:8px">Refined set — proposed</p>
+        <p class="section-head__note" style="max-width:700px;margin-bottom:32px">
+          Two shapes with intent — squared for the primary commerce action, pills for secondary and inline.
+          Hierarchy comes from value (solid espresso → outline → text), not three near-identical tan pills.
+          Every control now has hover, <strong style="color:var(--ink);font-weight:700">focus-visible</strong> and active states. Tab through to see the focus rings.
+        </p>
+
+        <div class="btn-grid">
+          <button class="btnx btnx--solid">Add to Cart<span class="ico">→</span></button>
+          <button class="btnx btnx--fill">Add to Cart<span class="ico">→</span></button>
+          <button class="btnx btnx--outline">View Collection</button>
+          <button class="btnx btnx--quiet"><span class="txt">Learn more</span></button>
+        </div>
+
+        <p class="label-text" style="margin:36px 0 16px">Filter chips — selected + focus</p>
+        <div class="chip-row">
+          <button class="chip" aria-pressed="true"><span class="chip-dot"></span>All</button>
+          <button class="chip" aria-pressed="false">Seating</button>
+          <button class="chip" aria-pressed="false">Tables</button>
+          <button class="chip" aria-pressed="false">Storage</button>
+          <button class="chip" aria-pressed="false">Lighting</button>
+        </div>
+
+        <div style="background:var(--dark-bg);padding:40px;border-radius:var(--radius-md);margin-top:36px;position:relative;overflow:hidden">
+          <div class="grain-overlay" style="border-radius:var(--radius-md)"></div>
+          <p class="label-text" style="margin-bottom:20px;position:relative;z-index:2">On dark background</p>
+          <div class="btn-grid" style="position:relative;z-index:2;margin-bottom:0">
+            <button class="btnx btnx--solid-dark">Add to Cart<span class="ico">→</span></button>
+            <button class="btnx btnx--ghost">View Collection</button>
+          </div>
+        </div>
+
+        <div class="rationale rationale--light" style="margin-top:32px">
+          <span class="rationale__icon">A11Y</span>
+          <p class="rationale__text">
+            Primary actions use solid fills (espresso on light, bone on dark) — <span class="tok">10.8:1</span>, full AA body.
+            Chamoisee stays as outline/accent and label text, consistent with the brand's headings and eyebrows (AA-large).
+            Dark outlines now use chamoisee (<span class="tok">4.58:1</span>) instead of the near-invisible <span class="tok">--dark-border</span> (1.82:1).
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ CARDS ═════════════════════════════════════════════════ -->
+  <section id="cards" class="bg-light section-pad">
+    <div class="container">
+      <div class="section-head reveal">
+        <div>
+          <p class="label-text" style="margin-bottom:12px">05 — Cards</p>
+          <h2 class="title-h2">Products &amp; Collections</h2>
+        </div>
+        <p class="section-head__note">
+          Product cards use --light-secondary (#fafaf8) backgrounds with 1rem
+          radius matching the live site's card treatment.
+        </p>
+      </div>
+
+      <!-- Product Cards -->
+      <p class="label-text reveal" style="margin-bottom:24px">Product cards</p>
+      <div class="product-grid reveal">
+        <div class="product-card">
+          <div class="product-card__img">
+            <div class="product-card__img-inner">
+              <div class="img-placeholder" style="background:radial-gradient(circle,#a27b5c 0%,#dcd7c9 100%)"></div>
+            </div>
+          </div>
+          <div class="product-card__body">
+            <p class="product-card__cat">Seating</p>
+            <h3 class="product-card__name">The Tura Chair</h3>
+            <p class="product-card__price">₹ 42,000</p>
+            <button class="product-card__cta">Add to Cart</button>
+          </div>
+        </div>
+        <div class="product-card">
+          <div class="product-card__img">
+            <div class="product-card__img-inner">
+              <div class="img-placeholder" style="background:radial-gradient(circle,#392F28 0%,#2A231E 100%)"></div>
+            </div>
+          </div>
+          <div class="product-card__body">
+            <p class="product-card__cat">Tables</p>
+            <h3 class="product-card__name">Writer's Desk</h3>
+            <p class="product-card__price">₹ 68,000</p>
+            <button class="product-card__cta">Add to Cart</button>
+          </div>
+        </div>
+        <div class="product-card">
+          <div class="product-card__img">
+            <div class="product-card__img-inner">
+              <div class="img-placeholder" style="background:radial-gradient(circle,#6b6258 0%,#3a342e 100%)"></div>
+            </div>
+          </div>
+          <div class="product-card__body">
+            <p class="product-card__cat">Beds</p>
+            <h3 class="product-card__name">Cane Headboard Bed</h3>
+            <p class="product-card__price">₹ 1,10,000</p>
+            <button class="product-card__cta">Add to Cart</button>
+          </div>
+        </div>
+        <div class="product-card">
+          <div class="product-card__img">
+            <div class="product-card__img-inner">
+              <div class="img-placeholder" style="background:radial-gradient(circle,#a27b5c 0%,#6b6258 100%)"></div>
+            </div>
+          </div>
+          <div class="product-card__body">
+            <p class="product-card__cat">Storage</p>
+            <h3 class="product-card__name">Side Cabinet</h3>
+            <p class="product-card__price">₹ 28,000</p>
+            <button class="product-card__cta">Add to Cart</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Product Cards — gallery plate (proposed redesign) -->
+      <p class="label-text reveal" style="margin-top:72px;margin-bottom:8px">Product cards — gallery plate</p>
+      <p class="section-head__note reveal" style="max-width:660px;margin-bottom:28px">
+        Borderless and photography-led. Heading in Josefin 400, a quiet hover-revealed
+        add action carrying the ↗ motif, and a subtle image zoom. Hover a card to compare.
+      </p>
+      <div class="gallery-grid reveal">
+        <div class="gcard">
+          <div class="gcard__media">
+            <div class="gcard__media-inner">
+              <div class="img-placeholder" style="background:radial-gradient(circle,#a27b5c 0%,#dcd7c9 100%)"></div>
+            </div>
+            <button class="gcard__add">Add ↗</button>
+          </div>
+          <p class="gcard__cat">Seating</p>
+          <h3 class="gcard__name">The Tura Chair</h3>
+          <p class="gcard__price">₹ 42,000</p>
+        </div>
+        <div class="gcard">
+          <div class="gcard__media">
+            <div class="gcard__media-inner">
+              <div class="img-placeholder" style="background:radial-gradient(circle,#392F28 0%,#2A231E 100%)"></div>
+            </div>
+            <button class="gcard__add">Add ↗</button>
+          </div>
+          <p class="gcard__cat">Tables</p>
+          <h3 class="gcard__name">Writer's Desk</h3>
+          <p class="gcard__price">₹ 68,000</p>
+        </div>
+        <div class="gcard">
+          <div class="gcard__media">
+            <div class="gcard__media-inner">
+              <div class="img-placeholder" style="background:radial-gradient(circle,#6b6258 0%,#3a342e 100%)"></div>
+            </div>
+            <button class="gcard__add">Add ↗</button>
+          </div>
+          <p class="gcard__cat">Beds</p>
+          <h3 class="gcard__name">Cane Headboard Bed</h3>
+          <p class="gcard__price">₹ 1,10,000</p>
+        </div>
+        <div class="gcard">
+          <div class="gcard__media">
+            <div class="gcard__media-inner">
+              <div class="img-placeholder" style="background:radial-gradient(circle,#a27b5c 0%,#6b6258 100%)"></div>
+            </div>
+            <button class="gcard__add">Add ↗</button>
+          </div>
+          <p class="gcard__cat">Storage</p>
+          <h3 class="gcard__name">Side Cabinet</h3>
+          <p class="gcard__price">₹ 28,000</p>
+        </div>
+      </div>
+
+      <!-- Collection Cards -->
+      <p class="label-text reveal" style="margin-top:64px;margin-bottom:24px">Collection cards</p>
+      <div class="collection-grid reveal">
+        <div class="coll-card">
+          <div class="coll-card__img" style="background:linear-gradient(160deg,#392F28,#2A231E)"></div>
+          <div class="coll-card__body">
+            <p class="coll-card__num">Collection 01</p>
+            <h3 class="coll-card__title">Of Stillness</h3>
+            <p class="coll-card__desc">Mid-Century Modern forms rooted in simplicity and material honesty</p>
+          </div>
+        </div>
+        <div class="coll-card">
+          <div class="coll-card__img" style="background:linear-gradient(160deg,#a27b5c,#6b6258)"></div>
+          <div class="coll-card__body">
+            <p class="coll-card__num">Collection 02</p>
+            <h3 class="coll-card__title">Of Memories</h3>
+            <p class="coll-card__desc">The warmth of familiar spaces through timeless material and detail</p>
+          </div>
+        </div>
+        <div class="coll-card">
+          <div class="coll-card__img" style="background:linear-gradient(160deg,#dcd7c9,#cfc7bd)"></div>
+          <div class="coll-card__body">
+            <p class="coll-card__num">Collection 03</p>
+            <h3 class="coll-card__title">Of Exploration</h3>
+            <p class="coll-card__desc">More diverse works from the studio that exist beyond a specific theme</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ PATTERNS — dark ═══════════════════════════════════════ -->
+  <section id="patterns" class="bg-dark section-pad">
+    <div class="grain-overlay"></div>
+    <div class="container" style="position:relative;z-index:2">
+      <div class="section-head reveal">
+        <div>
+          <p class="label-text" style="margin-bottom:12px">06 — Dark Patterns</p>
+          <h2 class="title-h2 on-dark">Nav · Spec · Materials · Cart</h2>
+        </div>
+        <p class="section-head__note on-dark">
+          Dark sections are cinematic moments — hero, narrative panels, ticker.
+          Grain at 3.5% applies only here. [D8]
+        </p>
+      </div>
+
+      <!-- Nav states -->
+      <p class="label-text reveal" style="margin-bottom:20px">Navigation states</p>
+      <div class="reveal">
+        <div class="nav-demo">
+          <div class="nav-demo__bar nav-demo__bar--dark">
+            <span class="nav-demo__logo" style="color:var(--bone)">NOKU</span>
+            <div class="nav-demo__links" style="color:rgba(220,215,201,0.65)">
+              <span>Work</span><span>Products</span><span>Menu</span>
+            </div>
+          </div>
+          <div class="nav-demo__caption" style="color:var(--dark-border)">DARK STATE — nav on dark hero / start scroll</div>
+        </div>
+        <div class="nav-demo">
+          <div class="nav-demo__bar nav-demo__bar--glass">
+            <span class="nav-demo__logo" style="color:var(--bone)">NOKU</span>
+            <div class="nav-demo__links" style="color:rgba(220,215,201,0.65)">
+              <span>Work</span><span>Products</span><span>Menu</span>
+            </div>
+          </div>
+          <div class="nav-demo__caption" style="color:var(--dark-border)">GLASS STATE — scrolled over dark section (backdrop-filter: blur 20px)</div>
+        </div>
+        <div class="nav-demo" style="background:var(--light)">
+          <div class="nav-demo__bar nav-demo__bar--light">
+            <span class="nav-demo__logo" style="color:var(--chamoisee)">NOKU</span>
+            <div class="nav-demo__links" style="color:var(--chamoisee)">
+              <span>Work</span><span>Products</span><span>Menu</span>
+            </div>
+          </div>
+          <div class="nav-demo__caption" style="color:var(--muted);background:rgba(162,123,92,0.06)">LIGHT STATE — scrolled over light section</div>
+        </div>
+      </div>
+
+      <!-- Spec grid -->
+      <p class="label-text reveal" style="margin-top:56px;margin-bottom:20px">Spec row (.spec-grid)</p>
+      <div class="spec-grid reveal">
+        <div class="spec-row">
+          <span class="spec-label">Material</span>
+          <span class="spec-val">Solid Teak, Natural Oil Finish</span>
+        </div>
+        <div class="spec-row">
+          <span class="spec-label">Dimensions</span>
+          <span class="spec-val">H 78 × W 120 × D 60 cm</span>
+        </div>
+        <div class="spec-row">
+          <span class="spec-label">Weight</span>
+          <span class="spec-val">24 kg</span>
+        </div>
+        <div class="spec-row">
+          <span class="spec-label">Lead time</span>
+          <span class="spec-val">8–10 weeks</span>
+        </div>
+      </div>
+
+      <!-- Material swatches + cart drawer -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:48px;margin-top:56px" class="reveal">
+        <div>
+          <p class="label-text" style="margin-bottom:20px">Material swatches</p>
+          <div class="mat-grid">
+            <div class="mat-swatch active" style="background:#8B6347" title="Teak Natural"></div>
+            <div class="mat-swatch" style="background:#5C3D2E" title="Teak Dark"></div>
+            <div class="mat-swatch" style="background:#C4A882" title="Cane"></div>
+            <div class="mat-swatch" style="background:#D4C5B0" title="Linen"></div>
+            <div class="mat-swatch" style="background:#2A231E" title="Gunmetal"></div>
+            <div class="mat-swatch" style="background:#dcd7c9" title="Bone"></div>
+          </div>
+        </div>
+        <div>
+          <p class="label-text" style="margin-bottom:20px">Cart drawer</p>
+          <div class="cart-mini">
+            <p class="cart-mini__header">Cart — 2 items</p>
+            <div class="cart-item">
+              <div class="cart-item__thumb" style="background:linear-gradient(135deg,#a27b5c,#6b6258)"></div>
+              <div>
+                <p class="cart-item__name">The Tura Chair</p>
+                <p class="cart-item__price">₹ 42,000 · Teak Natural</p>
+              </div>
+            </div>
+            <div class="cart-item">
+              <div class="cart-item__thumb" style="background:linear-gradient(135deg,#392F28,#2A231E)"></div>
+              <div>
+                <p class="cart-item__name">Writer's Desk</p>
+                <p class="cart-item__price">₹ 68,000 · Teak Dark</p>
+              </div>
+            </div>
+            <div style="margin-top:20px">
+              <button class="btn-secondary" style="width:100%;justify-content:center">View Cart</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ SPACING / TOKENS ═══════════════════════════════════════ -->
+  <section id="tokens" class="bg-light2 section-pad">
+    <div class="container">
+      <div class="section-head reveal">
+        <div>
+          <p class="label-text" style="margin-bottom:12px">07 — Spacing &amp; Size Tokens</p>
+          <h2 class="title-h2">The structural grid.</h2>
+        </div>
+      </div>
+
+      <div class="token-grid reveal">
+        <div class="token-row">
+          <div class="token-bar" style="width:8px"></div>
+          <span class="token-name">--space-xs</span>
+          <span class="token-val">0.5rem · 8px</span>
+        </div>
+        <div class="token-row">
+          <div class="token-bar" style="width:12px"></div>
+          <span class="token-name">--radius-sm</span>
+          <span class="token-val">0.5rem · 8px · small UI</span>
+        </div>
+        <div class="token-row">
+          <div class="token-bar" style="width:24px"></div>
+          <span class="token-name">--space-sm</span>
+          <span class="token-val">1.5rem · 24px</span>
+        </div>
+        <div class="token-row">
+          <div class="token-bar" style="width:16px"></div>
+          <span class="token-name">--radius-md</span>
+          <span class="token-val">1rem · 16px · cards, nav</span>
+        </div>
+        <div class="token-row">
+          <div class="token-bar" style="width:48px"></div>
+          <span class="token-name">--space-md</span>
+          <span class="token-val">3rem · 48px</span>
+        </div>
+        <div class="token-row">
+          <div class="token-bar" style="width:40px;background:var(--line)"></div>
+          <span class="token-name">--radius-pill</span>
+          <span class="token-val">100vw · buttons, tags</span>
+        </div>
+        <div class="token-row">
+          <div class="token-bar" style="width:80px"></div>
+          <span class="token-name">--space-lg</span>
+          <span class="token-val">7rem · 112px · section vertical</span>
+        </div>
+        <div class="token-row">
+          <div class="token-bar" style="width:1px;background:var(--chamoisee)"></div>
+          <span class="token-name">--border-width</span>
+          <span class="token-val">1px · always [D10]</span>
+        </div>
+        <div class="token-row">
+          <div class="token-bar" style="width:96px"></div>
+          <span class="token-name">--space-xl</span>
+          <span class="token-val">10rem · 160px · large padding</span>
+        </div>
+        <div class="token-row">
+          <div class="token-bar" style="width:120px;opacity:0.3"></div>
+          <span class="token-name">--max-width</span>
+          <span class="token-val">90rem · 1440px · layout max</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ FOOTER PATTERN ════════════════════════════════════════ -->
+  <div class="footer-demo">
+    <div class="container">
+      <div class="footer-cta-line reveal">
+        <p class="footer-cta-eyebrow">Ready to</p>
+        <button class="btn-cta-arrow">Craft your furniture?<span class="arrow">↗</span></button>
+      </div>
+      <div class="footer-grid reveal">
+        <div>
+          <p class="footer-wordmark">NOKU</p>
+        </div>
+        <div>
+          <p class="footer-col__heading">About</p>
+          <ul class="footer-col__links">
+            <li><a href="#">About</a></li>
+            <li><a href="#">Contact</a></li>
+          </ul>
+        </div>
+        <div>
+          <p class="footer-col__heading">Work</p>
+          <ul class="footer-col__links">
+            <li><a href="#">Shop</a></li>
+            <li><a href="#">Projects</a></li>
+            <li><a href="#">Collections</a></li>
+            <li><a href="#">Bespoke</a></li>
+          </ul>
+        </div>
+        <div>
+          <p class="footer-col__heading">Knowledge</p>
+          <ul class="footer-col__links">
+            <li><a href="#">Materials</a></li>
+            <li><a href="#">Sustainability</a></li>
+            <li><a href="#">Studio</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-legal">
+        <span>© 2025 Noku Studio. All rights reserved.</span>
+        <span>Privacy Policy · Terms &amp; Conditions</span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Scroll reveal
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('is-visible'); observer.unobserve(e.target); } });
+    }, { threshold: 0.08 });
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    // Material swatch toggle
+    document.querySelectorAll('.mat-swatch').forEach(sw => {
+      sw.addEventListener('click', () => {
+        sw.closest('.mat-grid').querySelectorAll('.mat-swatch').forEach(s => s.classList.remove('active'));
+        sw.classList.add('active');
+      });
+    });
+
+    // Floating nav: shrink on scroll + adapt to the section it floats over
+    const dsNav = document.querySelector('.ds-nav');
+    const darkZones = document.querySelectorAll('.bg-dark, .ticker-wrap');
+    function updateNav() {
+      dsNav.classList.toggle('scrolled', window.scrollY > 40);
+      const probe = dsNav.getBoundingClientRect().bottom + 12;
+      let overDark = false;
+      darkZones.forEach(z => {
+        const zr = z.getBoundingClientRect();
+        if (zr.top <= probe && zr.bottom >= probe) overDark = true;
+      });
+      dsNav.classList.toggle('light-nav', !overDark);
+    }
+    window.addEventListener('scroll', updateNav, { passive: true });
+    window.addEventListener('resize', updateNav);
+    updateNav();
+    requestAnimationFrame(updateNav);
+  </script>
+</body>
+</html>
