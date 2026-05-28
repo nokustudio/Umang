@@ -381,12 +381,41 @@
 
     /* ---- THANK YOU SECTION (dark) ---- */
     .landing-thankyou-section {
-      height: 100vh;
       background-color: #1E1915;
-      display: grid;
+      display: grid !important;
+      grid-template-columns: 1fr !important;
       grid-template-rows: auto 1fr auto;
+      gap: 0 !important;
       position: relative;
       overflow: hidden;
+      box-sizing: border-box;
+      opacity: 1 !important;
+      transform: none !important;
+      animation: none !important;
+      transition: none !important;
+    }
+
+    @media (min-width: 1201px) {
+      .landing-thankyou-section {
+        margin-top: -60px !important;
+        height: 100vh !important;
+        margin-left: -40px !important;
+        margin-right: -40px !important;
+        width: calc(100% + 80px) !important;
+        padding-top: 60px !important;
+      }
+    }
+
+    @media (max-width: 1200px) {
+      .landing-thankyou-section {
+        min-height: 100vh !important;
+        margin-left: -30px !important;
+        margin-right: -30px !important;
+        width: calc(100% + 60px) !important;
+        margin-bottom: -40px !important;
+        padding-top: 20px;
+        padding-bottom: 20px;
+      }
     }
     
     .landing-thankyou-section::before {
@@ -439,7 +468,7 @@
     .ty-nav {
       position: relative; z-index: 10;
       display: flex; justify-content: space-between; align-items: center;
-      padding: 32px 52px 0;
+      padding: 32px 40px 0;
     }
     .ty-nav__brand { display: flex; align-items: center; gap: 14px; }
     .ty-nav__logo  { height: 22px; width: auto; filter: brightness(0) invert(1); opacity: 0.9; }
@@ -456,7 +485,7 @@
     .ty-stage {
       position: relative; z-index: 10;
       display: flex; flex-direction: column; justify-content: center;
-      align-items: center; text-align: center; padding: 0 52px;
+      align-items: center; text-align: center; padding: 0 40px;
     }
     .ty-eyebrow {
       display: flex; align-items: center; gap: 16px; margin-bottom: 24px;
@@ -517,7 +546,7 @@
     .ty-footer {
       position: relative; z-index: 10;
       display: flex; justify-content: space-between; align-items: flex-end;
-      padding: 0 52px 36px;
+      padding: 0 40px 36px;
     }
     .ty-footer__left { display: flex; flex-direction: column; gap: 6px; }
     .ty-footer__credit {
@@ -2265,6 +2294,7 @@
       <div class="ty-eyebrow">
         <div class="ty-eyebrow-line"></div>
         <span class="ty-eyebrow-text">Volume One &nbsp;·&nbsp; Of Stillness</span>
+        <div class="ty-eyebrow-line"></div>
       </div>
       <h1 class="ty-title" id="ty-title">Thank You.</h1>
       <div class="ty-divider"></div>
@@ -2642,11 +2672,13 @@ const activeRenderIndex = {
                 header.style.opacity = '0';
                 header.style.pointerEvents = 'none';
               }
+              document.body.style.backgroundColor = '#1E1915';
             } else {
               if (header) {
                 header.style.opacity = '1';
                 header.style.pointerEvents = 'auto';
               }
+              document.body.style.backgroundColor = '#f4f5f1';
               if (idxEl && titleEl) {
                 badge.innerText = `${idxEl.innerText} ${titleEl.innerText}`;
               } else if (roomSection.id === 'room-custom') {

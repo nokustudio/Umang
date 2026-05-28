@@ -878,6 +878,7 @@ def main():
       <div class="ty-eyebrow">
         <div class="ty-eyebrow-line"></div>
         <span class="ty-eyebrow-text">Volume One &nbsp;·&nbsp; Of Stillness</span>
+        <div class="ty-eyebrow-line"></div>
       </div>
       <h1 class="ty-title" id="ty-title">Thank You.</h1>
       <div class="ty-divider"></div>
@@ -995,11 +996,13 @@ def main():
                 header.style.opacity = '0';
                 header.style.pointerEvents = 'none';
               }}
+              document.body.style.backgroundColor = '#1E1915';
             }} else {{
               if (header) {{
                 header.style.opacity = '1';
                 header.style.pointerEvents = 'auto';
               }}
+              document.body.style.backgroundColor = '#f4f5f1';
               if (idxEl && titleEl) {{
                 badge.innerText = `${{idxEl.innerText}} ${{titleEl.innerText}}`;
               }} else if (roomSection.id === 'room-custom') {{
