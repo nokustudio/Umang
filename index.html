@@ -2284,10 +2284,14 @@
         Thank you for exploring our volume of stillness.
       </p>
 
-      <!-- CTAs: Return to Plan Key -->
+      <!-- CTAs: Return to Plan Key & Replay Walkthrough -->
       <div class="ty-ctas" id="ty-ctas">
-        <button class="ty-btn ty-btn--primary" onclick="scrollToRoom('room-00')">
+        <button class="ty-btn" onclick="scrollToRoom('room-00')">
           <span>Plan Key</span>
+        </button>
+        <button class="ty-btn ty-btn--primary" onclick="document.getElementById('landing-hero').scrollIntoView({behavior:'smooth'})">
+          <span>Replay Walkthrough</span>
+          <span class="ty-btn__arrow">↑</span>
         </button>
       </div>
     </div>
@@ -2631,8 +2635,7 @@ const activeRenderIndex = {
           }
         }
       });
-
-      const isDesktop = window.innerWidth > 1200;
+            const isDesktop = window.innerWidth > 1200;
       const observerOptions = {
         root: isDesktop ? scrollContainer : null,
         rootMargin: '0px',
@@ -2643,9 +2646,26 @@ const activeRenderIndex = {
         entries.forEach(entry => {
           if (entry.isIntersecting) {
             const roomSection = entry.target;
-            const idx = roomSection.querySelector('.space-number').innerText;
-            const title = roomSection.querySelector('.space-title').innerText;
-            badge.innerText = `${idx} ${title}`;
+            const idxEl = roomSection.querySelector('.space-number');
+            const titleEl = roomSection.querySelector('.space-title');
+            const header = document.querySelector('.app-header');
+            
+            if (roomSection.id === 'thank-you') {
+              if (header) {
+                header.style.opacity = '0';
+                header.style.pointerEvents = 'none';
+              }
+            } else {
+              if (header) {
+                header.style.opacity = '1';
+                header.style.pointerEvents = 'auto';
+              }
+              if (idxEl && titleEl) {
+                badge.innerText = `${idxEl.innerText} ${titleEl.innerText}`;
+              } else if (roomSection.id === 'room-custom') {
+                badge.innerText = `12 Customisation`;
+              }
+            }
           }
         });
       }, observerOptions);

@@ -97,6 +97,7 @@ body {
   align-items: center;
   border-bottom: var(--border-width) solid var(--line);
   margin-bottom: 20px;
+  transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .branding-group {
@@ -1342,5 +1343,18 @@ body {
   .custom-cards-grid-new {
     grid-template-columns: repeat(2, 1fr);
     gap: 12px;
+  }
+}
+
+.map-layout-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+@media (min-width: 1201px) {
+  .landing-thankyou-section {
+    height: calc(100vh - 60px) !important;
   }
 }

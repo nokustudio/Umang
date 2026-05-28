@@ -526,6 +526,24 @@ def main():
             
         rpath = os.path.join(base_dir, folder)
         
+        # Determine layout image details
+        layout_images = {
+            "room-01": {"path": "Room wise layout/Foyer.png", "title": "Foyer Layout"},
+            "room-02": {"path": "Room wise layout/Living.png", "title": "Living Room 01 Layout"},
+            "room-03": {"path": "Room wise layout/Family.png", "title": "Living Room 02 Layout"},
+            "room-04": {"path": "Room wise layout/Family.png", "title": "Living Room 03 Layout"},
+            "room-05": {"path": "Room wise layout/Master Bedroom.png", "title": "Master Bedroom Layout"},
+            "room-06": {"path": "Room wise layout/Bedroom 1.png", "title": "Bedroom 01 Layout"},
+            "room-07": {"path": "Room wise layout/Dining.png", "title": "Dining Layout"},
+            "room-08": {"path": "Room wise layout/Bedroom 2.png", "title": "Bedroom 02 Layout"},
+            "room-09": {"path": "Room wise layout/Bedroom 3.png", "title": "Bedroom 03 Layout"},
+            "room-10": {"path": "Room wise layout/Lounge + Bar.png", "title": "Bar & Lounge Layout"},
+            "room-11": {"path": "Room wise layout/Balcony.png", "title": "Outdoor Layout"}
+        }
+        layout_info = layout_images.get(rid, {"path": "", "title": ""})
+        layout_img_path = layout_info["path"]
+        layout_img_title = layout_info["title"]
+        
         # Load main renders
         renders = []
         if os.path.exists(rpath):
@@ -700,10 +718,10 @@ def main():
           </blockquote>
           
           <div class="maps-container">
-            <!-- Detailed Layout Placeholder -->
-            <div class="map-placeholder-card" title="Detailed Room Layout">
+            <!-- Detailed Layout -->
+            <div class="map-placeholder-card" title="Detailed Room Layout" onclick="openLightbox(null, 0, '{layout_img_path}', '{layout_img_title}', 'Room wise layout')">
               <div class="map-svg-wrapper">
-                {layout_svg}
+                <img src="{layout_img_path}" alt="{layout_img_title}" class="map-layout-image">
               </div>
               <span class="map-label">Layout</span>
             </div>
@@ -960,8 +978,7 @@ def main():
           }}
         }}
       }});
-
-      const isDesktop = window.innerWidth > 1200;
+            const isDesktop = window.innerWidth > 1200;
       const observerOptions = {{
         root: isDesktop ? scrollContainer : null,
         rootMargin: '0px',
@@ -972,9 +989,26 @@ def main():
         entries.forEach(entry => {{
           if (entry.isIntersecting) {{
             const roomSection = entry.target;
-            const idx = roomSection.querySelector('.space-number').innerText;
-            const title = roomSection.querySelector('.space-title').innerText;
-            badge.innerText = `${{idx}} ${{title}}`;
+            const idxEl = roomSection.querySelector('.space-number');
+            const titleEl = roomSection.querySelector('.space-title');
+            const header = document.querySelector('.app-header');
+            
+            if (roomSection.id === 'thank-you') {{
+              if (header) {{
+                header.style.opacity = '0';
+                header.style.pointerEvents = 'none';
+              }}
+            }} else {{
+              if (header) {{
+                header.style.opacity = '1';
+                header.style.pointerEvents = 'auto';
+              }}
+              if (idxEl && titleEl) {{
+                badge.innerText = `${{idxEl.innerText}} ${{titleEl.innerText}}`;
+              }} else if (roomSection.id === 'room-custom') {{
+                badge.innerText = `12 Customisation`;
+              }}
+            }}
           }}
         }});
       }}, observerOptions);
