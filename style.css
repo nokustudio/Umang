@@ -1279,7 +1279,7 @@ body {
 
 @media (min-width: 1201px) {
   .custom-card-new__image-wrapper {
-    aspect-ratio: 2.2 / 1; /* Sleek horizontal aspect ratio to prevent vertical overflow */
+    aspect-ratio: 1.6 / 1; /* Taller format to display details better */
   }
 }
 
@@ -1315,7 +1315,7 @@ body {
 
 .custom-card-new__tag {
   font-family: var(--font-display);
-  font-size: 0.6rem;
+  font-size: 0.75rem; /* Increased from 0.6rem */
   font-weight: 600;
   letter-spacing: 0.12em;
   color: var(--chamoisee);
@@ -1324,7 +1324,7 @@ body {
 
 .custom-card-new__title {
   font-family: var(--font-body);
-  font-size: 0.8rem;
+  font-size: 1.05rem; /* Increased from 0.8rem */
   font-weight: 400;
   color: var(--ink);
   margin: 0;
@@ -1333,7 +1333,7 @@ body {
 
 .custom-card-new__desc {
   font-family: var(--font-body);
-  font-size: 0.62rem;
+  font-size: 0.82rem; /* Increased from 0.62rem */
   color: var(--muted);
   line-height: 1.4;
   margin: 0;
@@ -1375,7 +1375,8 @@ body {
 
 @media (min-width: 1201px) {
   .landing-thankyou-section {
-    height: calc(100vh - 60px) !important;
+    height: 100vh !important;
+    scroll-margin-top: 0 !important;
   }
 }
 

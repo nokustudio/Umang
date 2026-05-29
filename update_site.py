@@ -826,6 +826,62 @@ def main():
 
     html_blocks.append(generate_customisation_page())
 
+    # 8c. Generate Thank You Page (last section)
+    def generate_thank_you_page():
+        return """    <!-- ==========================================================================
+         SECTION 14: THANK YOU (dark)
+         ========================================================================== -->
+    <section class="room-section landing-thankyou-section" id="thank-you" data-room-title="Thank You">
+      <!-- Background Collage Panel / Vignette -->
+      <div class="ty-bg-panel">
+        <img src="Moodboard - of stillness/01.jpg" alt="Thank You background">
+      </div>
+      <div class="ty-bg-vignette"></div>
+
+      <!-- Tickers -->
+      <div class="ty-side-ticker"><span>Umang Residence &nbsp;·&nbsp; Good Earth Kochi</span></div>
+      <div class="ty-edition-mark"><span>Noku Studio &nbsp;·&nbsp; Edition 2026</span></div>
+
+      <!-- Header Nav -->
+      <nav class="ty-nav" aria-label="Thank you page navigation">
+        <div class="ty-nav__brand">
+          <img src="Noku mark.png" alt="Noku mark" class="ty-nav__logo">
+          <span class="ty-nav__wordmark">Noku Studio</span>
+        </div>
+        <span class="ty-nav__label">END OF PRESENTATION</span>
+      </nav>
+
+      <!-- Stage Content -->
+      <div class="ty-stage">
+        <div class="ty-eyebrow">
+          <span class="ty-eyebrow-line"></span>
+          <span class="ty-eyebrow-text">Good Earth Kochi</span>
+          <span class="ty-eyebrow-line"></span>
+        </div>
+        <h1 class="ty-title">Thank You.</h1>
+        <div class="ty-divider"></div>
+        <p class="ty-descriptor">
+          We look forward to collaborating with Good Earth to bring <strong>Umang</strong> to life.
+        </p>
+        
+        <div class="ty-ctas">
+          <button class="ty-btn ty-btn--primary" onclick="scrollToRoom('room-00')">
+            <span>Back to Plan Key</span>
+            <span class="ty-btn__arrow">↑</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <footer class="ty-footer">
+        <div class="ty-footer__left">
+          <span class="ty-footer__credit">Designed by Noku Studio</span>
+          <span class="ty-footer__client">Umang Residence &nbsp;·&nbsp; Pitch</span>
+        </div>
+        <span class="ty-pagination">30 &nbsp;/&nbsp; 30</span>
+      </footer>
+    </section>"""
+
     # 9. Load current index.html and merge
     print("\nMerging blocks into index.html...")
     with open(html_path, 'r', encoding='utf-8') as f:
@@ -861,7 +917,7 @@ def main():
     </main>"""
 
             # Reorder so that Materials & Moodboard (index 1) is the first slide, followed by Plan Key (index 0), then Furniture Layout
-            ordered_blocks = [html_blocks[1], html_blocks[0], furniture_layout_block] + html_blocks[2:]
+            ordered_blocks = [html_blocks[1], html_blocks[0], furniture_layout_block] + html_blocks[2:] + [generate_thank_you_page()]
             gen_rooms_str = "\n".join(ordered_blocks)
             # Scroll-to-top button (inserted just before the lightbox)
             scroll_top_html = """
@@ -955,17 +1011,25 @@ def main():
             const titleEl = roomSection.querySelector('.space-title');
             const header = document.querySelector('.app-header');
             
-            if (header) {{
-              header.style.opacity = '1';
-              header.style.pointerEvents = 'auto';
-            }}
-            document.body.style.backgroundColor = '#f4f5f1';
-            if (idxEl && titleEl) {{
-              badge.innerText = `${{idxEl.innerText}} ${{titleEl.innerText}}`;
-            }} else if (roomSection.id === 'room-layout') {{
-              badge.innerText = `Furniture Layout`;
-            }} else if (roomSection.id === 'room-custom') {{
-              badge.innerText = `13 Customisation`;
+            if (roomSection.id === 'thank-you') {{
+              if (header) {{
+                header.style.opacity = '0';
+                header.style.pointerEvents = 'none';
+              }}
+              document.body.style.backgroundColor = '#1E1915';
+            }} else {{
+              if (header) {{
+                header.style.opacity = '1';
+                header.style.pointerEvents = 'auto';
+              }}
+              document.body.style.backgroundColor = '#f4f5f1';
+              if (idxEl && titleEl) {{
+                badge.innerText = `${{idxEl.innerText}} ${{titleEl.innerText}}`;
+              }} else if (roomSection.id === 'room-layout') {{
+                badge.innerText = `Furniture Layout`;
+              }} else if (roomSection.id === 'room-custom') {{
+                badge.innerText = `13 Customisation`;
+              }}
             }}
           }}
         }});
