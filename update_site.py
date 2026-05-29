@@ -726,7 +726,6 @@ def main():
               <div class="map-svg-wrapper">
                 <img src="{layout_img_path}" alt="{layout_img_title}" class="map-layout-image">
               </div>
-              <span class="map-label">Layout</span>
             </div>
             
             <!-- Key Plan (larger, no label) -->
@@ -763,7 +762,6 @@ def main():
             <img src="Noku mark.png" alt="N" class="custom-brand-logo">
             <div class="custom-brand-text">
               <span class="custom-brand-title">CUSTOMISATION</span>
-              <span class="custom-brand-sub">13 &nbsp;·&nbsp; MADE FOR YOU</span>
             </div>
           </div>
           <h1 class="custom-hero-heading">Every piece, tailored<br>to the residence.</h1>
