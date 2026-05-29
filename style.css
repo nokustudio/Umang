@@ -314,35 +314,33 @@ body {
 /* Desktop Scroll Lock Rule */
 @media (min-width: 1201px) {
   html, body {
-    overflow-y: hidden; /* Disable page-level scrollbars on desktop */
+    overflow-y: auto; /* Enable page-level scrollbars on desktop */
   }
   
   .app-container {
-    height: 100vh;
-    overflow: hidden;
+    height: auto;
+    overflow: visible;
     padding: 0 40px;
   }
 
   .app-header {
+    position: sticky;
+    top: 0;
+    background-color: var(--light);
+    z-index: 100;
     margin-bottom: 0;
     flex-shrink: 0;
   }
 
   .scroll-container {
-    height: calc(100vh - 60px);
-    overflow-y: auto;
-    scroll-snap-type: y mandatory;
-    scroll-behavior: smooth;
-    scrollbar-width: none; /* Hide scroll-container scrollbar on Firefox */
-  }
-
-  .scroll-container::-webkit-scrollbar {
-    display: none; /* Hide scroll-container scrollbar on Chrome/Safari */
+    height: auto;
+    overflow: visible;
   }
 
   .room-section {
     height: calc(100vh - 60px);
     scroll-snap-align: start;
+    scroll-margin-top: 60px; /* Offset for sticky header */
     box-sizing: border-box;
     padding: 20px 0;
   }

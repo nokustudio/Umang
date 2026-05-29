@@ -941,9 +941,8 @@ def main():
           }}
         }}
       }});
-            const isDesktop = window.innerWidth > 1200;
       const observerOptions = {{
-        root: isDesktop ? scrollContainer : null,
+        root: null,
         rootMargin: '0px',
         threshold: 0.4
       }};
@@ -976,11 +975,11 @@ def main():
 
       // Scroll-to-top button visibility: show when user scrolls past the first section
       const scrollTopBtn = document.getElementById('scroll-top-btn');
-      if (scrollTopBtn && scrollContainer) {{
-        scrollContainer.addEventListener('scroll', () => {{
+      if (scrollTopBtn) {{
+        window.addEventListener('scroll', () => {{
           // Show if scrolled past the first snap section (~80% of viewport height)
-          const threshold = scrollContainer.clientHeight * 0.8;
-          if (scrollContainer.scrollTop > threshold) {{
+          const threshold = window.innerHeight * 0.8;
+          if (window.scrollY > threshold) {{
             scrollTopBtn.classList.add('visible');
           }} else {{
             scrollTopBtn.classList.remove('visible');
