@@ -74,8 +74,8 @@ def main():
     rooms_config = [
         {"id": "room-materials", "folder": "Materials", "title": "Materials & Moodboard", "label": "Palette", "quote": "The tactile foundation of Umang. A curation of warm wood, rich leathers, woven fabrics, and patinated brass."},
         {"id": "room-01", "folder": "01. Foyer", "title": "Foyer", "label": "Entry", "quote": "A threshold of arrival. Setting a quiet tone with raw textures, warm wood, and gentle light."},
-        {"id": "room-02", "folder": "02. Living Room 01", "title": "Living Room 01", "label": "Seating", "quote": "A space for quiet pause. Natural elements invite conversation and bring warmth to the heart of the home."},
-        {"id": "room-03", "folder": "03. Living Room 02", "title": "Living Room 02", "label": "Reading", "quote": "A sanctuary of light and form. Where furniture becomes sculptural, crafting spaces of ease."},
+        {"id": "room-02", "folder": "02. Living Room 01", "title": "Living Room 01", "label": "Reading", "quote": "A sanctuary of light and form. Where furniture becomes sculptural, crafting spaces of ease."},
+        {"id": "room-03", "folder": "03. Living Room 02", "title": "Living Room 02", "label": "Seating", "quote": "A space for quiet pause. Natural elements invite conversation and bring warmth to the heart of the home."},
         {"id": "room-04", "folder": "04. Living Room 03", "title": "Living Room 03", "label": "Work", "quote": "The art of focus and rest. A corner carved for deep thoughts, surrounded by tactile timber."},
         {"id": "room-05", "folder": "05. Master Bedroom", "title": "Master Bedroom", "label": "Primary suite", "quote": "A retreat within a retreat. Soft light plays on rich wood, creating a sanctuary for quiet dreams."},
         {"id": "room-06", "folder": "06. Bedroom 01", "title": "Bedroom 01", "label": "Secondary", "quote": "Restful horizons. Clean lines and warm tones compose a space of absolute ease and privacy."},
@@ -532,8 +532,8 @@ def main():
         # Determine layout image details
         layout_images = {
             "room-01": {"path": "Room wise layout/Foyer.png", "title": "Foyer Layout"},
-            "room-02": {"path": "Room wise layout/Living.png", "title": "Living Room 01 Layout"},
-            "room-03": {"path": "Room wise layout/Family.png", "title": "Living Room 02 Layout"},
+            "room-02": {"path": "Room wise layout/Family.png", "title": "Living Room 01 Layout"},
+            "room-03": {"path": "Room wise layout/Living.png", "title": "Living Room 02 Layout"},
             "room-04": {"path": "Room wise layout/Family.png", "title": "Living Room 03 Layout"},
             "room-05": {"path": "Room wise layout/Master Bedroom.png", "title": "Master Bedroom Layout"},
             "room-06": {"path": "Room wise layout/Bedroom 1.png", "title": "Bedroom 01 Layout"},
