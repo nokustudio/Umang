@@ -2872,62 +2872,6 @@
       </div><!-- /custom-cards-row -->
     </main>
 
-  <!-- ======================================================================
-       SECTION 4: THANK YOU (dark)
-       ====================================================================== -->
-  <section class="room-section landing-thankyou-section" id="thank-you" aria-label="Thank You">
-    <!-- Background panel with subtle image and heavy dark vignette -->
-    <div class="ty-bg-panel" aria-hidden="true">
-      <img src="02. Living Room 01/Living Room 01 v1.png" alt="">
-    </div>
-    <div class="ty-bg-vignette" aria-hidden="true"></div>
-
-    <!-- Side labels -->
-    <div class="ty-side-ticker" aria-hidden="true"><span>Good Earth Kochi · Umang Residence · Volume One</span></div>
-    <div class="ty-edition-mark" aria-hidden="true"><span>Noku Studio · N°1 · 2026</span></div>
-
-    <!-- Nav -->
-    <nav class="ty-nav" aria-label="Section navigation">
-      <div class="ty-nav__brand">
-        <img src="Noku mark.png" alt="Noku Studio" class="ty-nav__logo">
-        <span class="ty-nav__wordmark">Noku Studio</span>
-      </div>
-      <span class="ty-nav__label">End &nbsp;·&nbsp; Walkthrough</span>
-    </nav>
-
-    <!-- Thank You content -->
-    <div class="ty-stage">
-      <div class="ty-eyebrow">
-        <div class="ty-eyebrow-line"></div>
-        <span class="ty-eyebrow-text">Volume One &nbsp;·&nbsp; Of Stillness</span>
-        <div class="ty-eyebrow-line"></div>
-      </div>
-      <h1 class="ty-title" id="ty-title">Thank You.</h1>
-      <div class="ty-divider"></div>
-      <p class="ty-descriptor" id="ty-desc">
-        A project by <strong>Noku Studio</strong> in collaboration with <strong>Good Earth</strong>.<br>
-        Thank you for exploring our volume of stillness.
-      </p>
-
-      <!-- CTAs: Return to Plan Key -->
-      <div class="ty-ctas" id="ty-ctas">
-        <button class="ty-btn ty-btn--primary" onclick="scrollToRoom('room-00')">
-          <span>Plan Key</span>
-        </button>
-      </div>
-    </div>
-
-    <!-- Footer strip -->
-    <footer class="ty-footer">
-      <div class="ty-footer__left">
-        <span class="ty-footer__credit">NOKU STUDIO · BENGALURU</span>
-        <span class="ty-footer__client">hello@nokustudio.com &nbsp;·&nbsp; nokustudio.com</span>
-      </div>
-      <div class="ty-footer__right">
-        <span class="ty-pagination">30 &nbsp;/&nbsp; 30</span>
-      </div>
-    </footer>
-  </section>
     </div>
   </div>
 
@@ -3274,25 +3218,17 @@ const activeRenderIndex = {
             const titleEl = roomSection.querySelector('.space-title');
             const header = document.querySelector('.app-header');
             
-            if (roomSection.id === 'thank-you') {
-              if (header) {
-                header.style.opacity = '0';
-                header.style.pointerEvents = 'none';
-              }
-              document.body.style.backgroundColor = '#1E1915';
-            } else {
-              if (header) {
-                header.style.opacity = '1';
-                header.style.pointerEvents = 'auto';
-              }
-              document.body.style.backgroundColor = '#f4f5f1';
-              if (idxEl && titleEl) {
-                badge.innerText = `${idxEl.innerText} ${titleEl.innerText}`;
-              } else if (roomSection.id === 'room-layout') {
-                badge.innerText = `Furniture Layout`;
-              } else if (roomSection.id === 'room-custom') {
-                badge.innerText = `13 Customisation`;
-              }
+            if (header) {
+              header.style.opacity = '1';
+              header.style.pointerEvents = 'auto';
+            }
+            document.body.style.backgroundColor = '#f4f5f1';
+            if (idxEl && titleEl) {
+              badge.innerText = `${idxEl.innerText} ${titleEl.innerText}`;
+            } else if (roomSection.id === 'room-layout') {
+              badge.innerText = `Furniture Layout`;
+            } else if (roomSection.id === 'room-custom') {
+              badge.innerText = `13 Customisation`;
             }
           }
         });

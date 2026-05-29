@@ -88,6 +88,7 @@ body {
   display: flex;
   flex-direction: column;
   padding: 0 40px 20px 40px; /* Reduced bottom padding */
+  overflow-x: hidden;
 }
 
 /* Header - Reduced Height */
@@ -177,6 +178,7 @@ body {
 
 .scroll-container {
   width: 100%;
+  overflow-x: hidden;
 }
 
 /* Main Section Grid - Classic 2-Column Split */
@@ -188,6 +190,7 @@ body {
   transform: translateY(20px);
   animation: pageFadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   transition: var(--transition-smooth);
+  overflow-x: hidden;
 }
 
 .room-section.hidden {
