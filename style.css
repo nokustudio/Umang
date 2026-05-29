@@ -343,6 +343,8 @@ body {
     scroll-margin-top: 60px; /* Offset for sticky header */
     box-sizing: border-box;
     padding: 20px 0;
+    margin-bottom: 120px; /* Added more gap between sections */
+    gap: 50px; /* Added more column gap between components */
   }
 
   .main-render-wrapper {
@@ -1275,6 +1277,12 @@ body {
   background-color: var(--cream);
 }
 
+@media (min-width: 1201px) {
+  .custom-card-new__image-wrapper {
+    aspect-ratio: 2.2 / 1; /* Sleek horizontal aspect ratio to prevent vertical overflow */
+  }
+}
+
 .custom-card-new__image {
   width: 100%;
   height: 100%;
@@ -1295,8 +1303,8 @@ body {
 }
 
 .custom-dim-svg {
-  width: 100%;
-  height: 100%;
+  width: auto;
+  height: 80%;
 }
 
 .custom-card-new__body {
