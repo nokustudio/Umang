@@ -29,3 +29,6 @@ desktop.ini
 
 # Full-resolution originals kept as backups when images are compressed for web
 *.orig
+
+# Client-facing quotes — carry live prices and hand-edited quantities; kept local, never pushed
+Noku Quote - *.xlsx
